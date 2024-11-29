@@ -1,13 +1,13 @@
 require("dotenv").config();
 require("express-async-errors");
-import express from "express";
+import express, { Application, NextFunction } from "express";
 import { Request, Response } from "express";
 import authRoutes from "./app/routes/api-auth";
 import cors from "cors";
 
 const session = require("express-session");
 
-const app: express.Application = express();
+const app: Application = express();
 app.use(cors());
 
 app.use(
@@ -19,7 +19,7 @@ app.use(
   })
 );
 
-app.use((err, req, res, next) => {
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.log(err);
   return res.status(500).json({ success: false, error: err?.message });
 });

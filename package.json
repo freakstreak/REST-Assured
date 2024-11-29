@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "backend": "npm run dev -w @hackathon/backend",
-    "frontend": "npm run dev -w @hackathon/frontend"
+    "frontend": "npm run dev -w @hackathon/frontend",
+    "hasura": "hasura console --project hasura"
   },
   "repository": {
     "type": "git",
