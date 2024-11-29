@@ -1,0 +1,26 @@
+{
+  "name": "hackathon",
+  "version": "0.0.1",
+  "description": "",
+  "scripts": {
+    "backend": "npm run dev -w @hackathon/backend",
+    "frontend": "npm run dev -w @hackathon/frontend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:freakstreak/hackathon.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "private": "true",
+  "workspaces": [
+    "packages/*"
+  ],
+  "dependencies": {
+    "chartjs-plugin-datalabels": "^2.2.0",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17"
+  }
+}
