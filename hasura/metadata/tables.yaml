@@ -1,3 +1,10 @@
 - table:
     name: users
     schema: public
+  configuration:
+    column_config:
+      id:
+        custom_name: id
+    custom_column_names:
+      id: id
+    custom_root_fields: {}

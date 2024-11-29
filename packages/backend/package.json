@@ -5,7 +5,7 @@
   "main": "build/app.js",
   "scripts": {
     "tsc": "tsc",
-    "dev": "ts-node-dev --respawn --transpile-only ./app/app.ts",
+    "dev": "ts-node-dev --respawn --transpile-only ./app.ts",
     "prod": "tsc && node ./build/app/app.js"
   },
   "dependencies": {
@@ -16,6 +16,7 @@
     "express": "^4.21.1",
     "express-async-errors": "^3.1.1",
     "express-session": "^1.18.1",
+    "express-validator": "^7.2.0",
     "jsonwebtoken": "^9.0.2",
     "openai": "^4.70.2"
   },

@@ -4,33 +4,24 @@ import express, { Application, NextFunction } from "express";
 import { Request, Response } from "express";
 import authRoutes from "./app/routes/api-auth";
 import cors from "cors";
-
-const session = require("express-session");
+import Config from "./app/config";
 
 const app: Application = express();
 app.use(cors());
+app.use(express.json());
 
-app.use(
-  session({
-    secret: "something crazy",
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false },
-  })
-);
-
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  console.log(err);
-  return res.status(500).json({ success: false, error: err?.message });
+app.use((err: any, req: Request, res: any, next: any) => {
+  console.log("--kyu hawa nikal gayi---", err.message);
+  return res.json({ success: false, error: err?.message });
 });
 
 app.use(authRoutes);
 
-app.get("/", (req: Request, res: Response) => {
+app.get("/", (req: Request, res: any) => {
   res.json({ message: "Hello World" });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = Config.APP_PORT;
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
