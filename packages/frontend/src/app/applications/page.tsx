@@ -53,9 +53,9 @@ const Applications = () => {
           {applications?.map((application) => (
             <Application
               key={application.id}
+              id={application.id}
               name={application.name}
               description={application.description || ""}
-              status={application.status}
               createdAt={application.created_at}
             />
           ))}
