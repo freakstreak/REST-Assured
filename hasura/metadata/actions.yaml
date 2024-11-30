@@ -1,4 +1,9 @@
 actions:
+  - name: createApplication
+    definition:
+      kind: synchronous
+      handler: '{{ACTION_BASE_URL}}/application'
+      forward_client_headers: true
   - name: login
     definition:
       kind: synchronous
@@ -19,4 +24,6 @@ custom_types:
   objects:
     - name: SignupData
     - name: SignUpResponse
+    - name: createApplicationData
+    - name: CreateApplicationResponse
   scalars: []

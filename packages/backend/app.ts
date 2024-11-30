@@ -5,6 +5,7 @@ import { Request, Response } from "express";
 import authRoutes from "./app/routes/api-auth";
 import cors from "cors";
 import Config from "./app/config";
+import applicationRouter from "./app/routes/api-application";
 
 const app: Application = express();
 app.use(cors());
@@ -16,6 +17,7 @@ app.use((err: any, req: Request, res: any, next: any) => {
 });
 
 app.use(authRoutes);
+app.use(applicationRouter)
 
 app.get("/", (req: Request, res: any) => {
   res.json({ message: "Hello World" });

@@ -1,4 +1,11 @@
 type Mutation {
+  createApplication(
+    name: String!
+    description: String!
+  ): CreateApplicationResponse
+}
+
+type Mutation {
   login(
     email: String!
     password: String!
@@ -23,6 +30,21 @@ type SignupData {
 
 type SignUpResponse {
   data: SignupData
+  message: String
+  success: Boolean
+}
+
+type createApplicationData {
+  created_at: String
+  description: String
+  id: Int
+  name: String
+  status: String
+  updated_at: String
+}
+
+type CreateApplicationResponse {
+  data: createApplicationData
   message: String
   success: Boolean
 }
