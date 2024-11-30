@@ -75,8 +75,38 @@ class OperationController {
             if (data?.errors) {
                 return Common.Response(res, false, data?.errors[0].message, null);
             }
-            
+
             return Common.Response(res, true, "Operation updated successfully", data?.data?.update_operations_by_pk);
+        } catch (error) {
+            return Common.Response(res, false, error.message);
+        }
+    }
+
+    public static async deleteOperation(req: any, res: any): Promise<any> {
+        try {
+            const { id } = req.body.input || req.body;
+
+            const feature = await Common.GQLRequest({
+                variables: { id: id },
+                query: operationQueries.getFeatureNameByOperationId,
+                }
+            );
+
+            if (feature?.data?.errors) {
+                return Common.Response(res, false, feature?.data?.errors[0].message, null);
+            }
+
+            const featureName = feature?.data?.data?.operations_by_pk?.feature?.name;
+            const operationName = feature?.data?.data?.operations_by_pk?.name;
+
+            // delete file
+
+            const { data } = await Common.GQLRequest({
+                variables: { id: id },
+                query: operationQueries.deleteOperation,
+            })
+
+            return Common.Response(res, true, "Operation deleted successfully", data?.data?.delete_operations_by_pk);
         } catch (error) {
             return Common.Response(res, false, error.message);
         }

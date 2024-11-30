@@ -5,5 +5,6 @@ const router = express.Router();
 
 router.post("/operation", authenticate, OperationController.createOperation);
 router.post("/operation-update", authenticate, OperationController.updateOperation);
+router.post("/operation-delete", authenticate, OperationController.deleteOperation);
 
 export default router;

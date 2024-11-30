@@ -9,6 +9,7 @@ const Config = {
     "http://localhost:8080/v1/graphql"
   ),
   HASURA_GRAPHQL_ADMIN_SECRET: env("HASURA_GRAPHQL_ADMIN_SECRET", "secret"),
+  OPENAI_SECRET_KEY: env("OPENAI_SECRET_KEY"),
 };
 
 export default Config;
