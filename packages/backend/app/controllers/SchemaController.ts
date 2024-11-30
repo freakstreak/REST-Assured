@@ -4,6 +4,7 @@ import { Common } from "../common";
 import applicationQueries from "../repositories/applicationQueries";
 import OpenAIService from "../services/openai";
 import SchemaQueries from "../repositories/schemaQueries";
+import createRoute from "../services/createRoute";
 
 class SchemaController {
   public static async createModelAndMigration(
@@ -96,7 +97,7 @@ class SchemaController {
       {
         "schemas": [
           {
-            "schemaName": "/schema-name",
+            "schemaName": "schema-name",
             "description": "Description of the Schema.",
             "attributes": [
               {name: "attributeName", "type": "string", ...otherProperties... },
@@ -136,7 +137,11 @@ class SchemaController {
           application_id: applicationId,
           name: schemaInfo.schemaName,
           json: schemaInfo,
+          route_name: schemaInfo.schemaName,
         });
+
+        // create routes for each schema
+        await createRoute(application.file_path, schemaInfo.schemaName);
       });
 
       const { data: createdSchemas } = await Common.GQLRequest({
