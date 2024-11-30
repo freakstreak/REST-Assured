@@ -6,6 +6,20 @@ actions:
       forward_client_headers: true
     permissions:
       - role: user
+  - name: createOperation
+    definition:
+      kind: synchronous
+      handler: '{{ACTION_BASE_URL}}/operation'
+      forward_client_headers: true
+    permissions:
+      - role: user
+  - name: deleteOperation
+    definition:
+      kind: synchronous
+      handler: '{{ACTION_BASE_URL}}/operation-delete'
+      forward_client_headers: true
+    permissions:
+      - role: user
   - name: login
     definition:
       kind: synchronous
@@ -20,6 +34,13 @@ actions:
       forward_client_headers: true
     permissions:
       - role: public
+  - name: updateOperation
+    definition:
+      kind: synchronous
+      handler: '{{ACTION_BASE_URL}}/operation-update'
+      forward_client_headers: true
+    permissions:
+      - role: user
 custom_types:
   enums: []
   input_objects: []
@@ -28,4 +49,7 @@ custom_types:
     - name: SignUpResponse
     - name: createApplicationData
     - name: CreateApplicationResponse
+    - name: createOperationResponse
+    - name: DeleteOperationResponse
+    - name: DeleteOperationData
   scalars: []

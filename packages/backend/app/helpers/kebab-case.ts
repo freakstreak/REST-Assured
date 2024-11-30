@@ -1,5 +1,5 @@
 // Function to convert a string to kebab-case
-function toKebabCase(str: string): string {
+export function toKebabCase(str: string): string {
   const config = {
     conversionRules: {
       case: "lowercase",

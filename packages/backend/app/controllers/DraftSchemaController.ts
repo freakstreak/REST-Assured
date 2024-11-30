@@ -14,19 +14,13 @@ class DraftSchemaController {
       return Common.ValidationErrorResponse(res, errors.array());
     }
 
-    if (!draftSchemaId || !feedback) {
-      return Common.Response(
-        res,
-        false,
-        "Draft schema id and feedback are required"
-      );
-    }
     // get previous schema from database
     const { data: draftSchemaData } = await Common.GQLRequest({
       variables: { id: draftSchemaId },
       query: DraftSchemaQueries.getDraftSchemaById,
     });
 
+    console.log(draftSchemaData);
     if (
       !draftSchemaData?.data?.application_draft_schemas_by_pk ||
       draftSchemaData.errors

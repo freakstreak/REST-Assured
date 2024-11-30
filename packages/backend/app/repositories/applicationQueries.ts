@@ -17,7 +17,7 @@ class ApplicationQueries {
       name
       status
       description
-      application_draft_schemas {
+      application_draft_schema {
         id
         json
       }
