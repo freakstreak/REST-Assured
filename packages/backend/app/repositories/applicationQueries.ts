@@ -1,9 +1,10 @@
 class ApplicationQueries {
-  public createApplication = `mutation MyMutation($name: String, $description: String, $user_id: uuid) {
-        insert_applications_one(object: {name: $name, description: $description, user_id: $user_id, status: "active"}) {
+  public createApplication = `mutation MyMutation($name: String, $description: String, $user_id: uuid, $filePath: String) {
+        insert_applications_one(object: {name: $name, description: $description, user_id: $user_id, status: "active", file_path: $filePath}) {
           id
           name
           status
+    			file_path
           created_at
           description
           updated_at
@@ -17,6 +18,7 @@ class ApplicationQueries {
       name
       status
       description
+      file_path
       application_draft_schema {
         id
         json
