@@ -1,17 +1,19 @@
 import { Common } from "../common";
 import operationQueries from "../repositories/operationQueries";
+import { createOperationFile, deleteOperationFile } from '../helpers/fs-write-operations';
+import * as path from 'path';
 
 class OperationController {
     public static async createOperation(req: any, res: any): Promise<any> {
         try {
-            const { name, modelId } = req.body.input || req.body;
+            const { name, applicationSchemaId } = req.body.input || req.body;
 
             if (name !== 'create' || name !== 'read' || name !== 'update' || name !== 'delete') {
                 return Common.Response(res, false, "Invalid operation name", null);
             }
 
             const getFeatureId = await Common.GQLRequest({
-                variables: { id: modelId },
+                variables: { id: applicationSchemaId },
                 query: operationQueries.getFeatureIdByModelId,
             });
 
@@ -23,14 +25,22 @@ class OperationController {
                 return Common.Response(res, false, "Model not found", null);
             }
 
-            const featureId = getFeatureId?.data?.data?.model_by_pk?.feature_id;
-            const featureName = getFeatureId?.data?.data?.model_by_pk?.feature?.name;
+            const featureId = getFeatureId?.data?.data?.application_schemas_by_pk?.id;
+            const featureName = getFeatureId?.data?.data?.application_schemas_by_pk?.name;
 
-            //
-            
+            // Create operation file with specified content
+            const operationFileResult = createOperationFile({
+                featureName,
+                operationName: name,
+                baseDir: path.resolve(__dirname, '../../../../user-applications/backend')
+            });
+
+            if (!operationFileResult.success) {
+                return Common.Response(res, false, operationFileResult.message, null);
+            }
 
             const { data } = await Common.GQLRequest({
-                variables: { feature_id: featureId, model_id: modelId, name: name },
+                variables: { application_schema_id: applicationSchemaId, name: name },
                 query: operationQueries.addOperationId,
             })
 
@@ -62,10 +72,19 @@ class OperationController {
                 return Common.Response(res, false, feature?.data?.errors[0].message, null);
             }
 
-            const featureName = feature?.data?.data?.operations_by_pk?.feature?.name;
+            const featureName = feature?.data?.data?.operations_by_pk?.application_schema?.name;
 
-            //
+            // create operation file
 
+            const operationFileResult = createOperationFile({
+                featureName,
+                operationName: name,
+                baseDir: path.resolve(__dirname, '../../../../user-applications/backend')
+            });
+
+            if (!operationFileResult.success) {
+                return Common.Response(res, false, operationFileResult.message, null);
+            }
 
             const { data } = await Common.GQLRequest({
                 variables: { id: id, name: name },
@@ -96,10 +115,20 @@ class OperationController {
                 return Common.Response(res, false, feature?.data?.errors[0].message, null);
             }
 
-            const featureName = feature?.data?.data?.operations_by_pk?.feature?.name;
+            const featureName = feature?.data?.data?.operations_by_pk?.application_schema?.name;
             const operationName = feature?.data?.data?.operations_by_pk?.name;
 
-            // delete file
+            // delete operation file
+
+            const operationFileResult = deleteOperationFile({
+                featureName,
+                operationName,
+                baseDir: path.resolve(__dirname, '../../../../user-applications/backend')
+            });
+
+            if (!operationFileResult.success) {
+                return Common.Response(res, false, operationFileResult.message, null);
+            }
 
             const { data } = await Common.GQLRequest({
                 variables: { id: id },
