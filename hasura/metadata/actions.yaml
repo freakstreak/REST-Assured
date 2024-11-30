@@ -1,5 +1,5 @@
 actions:
-  - name: acticreateApplicationonName
+  - name: createApplication
     definition:
       kind: synchronous
       handler: '{{ACTION_BASE_URL}}/application'

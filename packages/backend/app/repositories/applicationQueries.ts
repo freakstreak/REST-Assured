@@ -1,6 +1,6 @@
 class ApplicationQueries {
   public createApplication = `mutation MyMutation($name: String, $description: String, $user_id: uuid) {
-        insert_applications_one(object: {name: $name, description: $description, user_id: $user_id, status: "active"}) {
+        insert_applications_one(object: {name: $name, description: $description, user_id: $user_id, status: "Features Generation"}) {
           id
           name
           status

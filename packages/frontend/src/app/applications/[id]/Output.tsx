@@ -3,6 +3,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import FeatureList from "@/app/applications/[id]/FeatureList";
+import SchemaView from "@/app/applications/[id]/components/SchemaView";
 
 import Image from "next/image";
 import ArrowRightIcon from "@/public/icons/arrow-right-light.svg";
@@ -18,6 +19,7 @@ import {
   updateDraftSchema,
 } from "@/services/draftSchemaService";
 import { updateStatus } from "@/services/applicationService";
+import { getSchemas } from "@/services/schemaServices";
 
 type Props = {
   applicationId: string | undefined;
@@ -42,6 +44,13 @@ const Output = ({ applicationId, status }: Props) => {
     mutationFn: updateDraftSchema,
   });
 
+  // schemas
+  const { data: schemas } = useQuery({
+    queryKey: ["schemas", applicationId?.toString()],
+    enabled: !!applicationId && status === Step.SCHEMA,
+    queryFn: () => getSchemas(applicationId as string),
+  });
+
   const { mutate: updateStatusMutation, isPending } = useMutation({
     mutationFn: updateStatus,
   });
@@ -50,8 +59,10 @@ const Output = ({ applicationId, status }: Props) => {
     switch (status) {
       case Step.FEATURES_GENERATION:
         return draftSchemas?.json;
+      case Step.SCHEMA:
+        return schemas;
     }
-  }, [status, draftSchemas]);
+  }, [status, draftSchemas, schemas]);
 
   const RenderedContent = useCallback(() => {
     switch (status) {
@@ -62,20 +73,23 @@ const Output = ({ applicationId, status }: Props) => {
             features={draftSchemas?.json}
           />
         );
+      case Step.SCHEMA:
+        return <SchemaView loading={isUpdatingDraftSchema} schemas={schemas} />;
     }
-  }, [status, draftSchemas, isUpdatingDraftSchema]);
+  }, [status, draftSchemas, isUpdatingDraftSchema, schemas]);
 
   const handleFeedbackChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFeedback(e.target.value);
   };
 
   const handleProceed = () => {
-    updateStatusMutation(
-      { id: applicationId as string, status },
-      {
-        onSuccess: (data) => {
-          console.log(data);
+    const steps = Object.values(Step);
+    const nextStep = steps[steps.indexOf(status) + 1];
 
+    updateStatusMutation(
+      { id: applicationId as string, status: nextStep },
+      {
+        onSuccess: () => {
           queryClient.invalidateQueries({
             queryKey: ["application", applicationId?.toString()],
           });
@@ -104,7 +118,7 @@ const Output = ({ applicationId, status }: Props) => {
 
   return (
     <div className="relative flex flex-col gap-y-3 pt-5 border-l border-gray-200 max-h-screen overflow-auto">
-      {activeData ? (
+      {activeData && activeData.length > 0 ? (
         <RenderedContent />
       ) : (
         <div className="flex flex-col flex-1 gap-y-4 justify-center items-center px-8">
@@ -133,27 +147,33 @@ const Output = ({ applicationId, status }: Props) => {
             />
           </Button>
 
-          <span className="text-sm text-gray-500 self-center">OR</span>
+          {status !== Step.SCHEMA && (
+            <>
+              <span className="text-sm text-gray-500 self-center">OR</span>
 
-          <div className="w-full px-4 flex items-center gap-x-2">
-            <Input
-              value={feedback}
-              onChange={handleFeedbackChange}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  handleUpdateDraftSchema();
-                }
-              }}
-              placeholder="Suggest changes"
-            />
+              <div className="w-full px-4 flex items-center gap-x-2">
+                <Input
+                  value={feedback}
+                  onChange={handleFeedbackChange}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleUpdateDraftSchema();
+                    }
+                  }}
+                  placeholder="Suggest changes"
+                />
 
-            <Button
-              disabled={isUpdatingDraftSchema || !feedback.trim() || isPending}
-              onClick={handleUpdateDraftSchema}
-            >
-              <Image src={SendIcon} alt="send" />
-            </Button>
-          </div>
+                <Button
+                  disabled={
+                    isUpdatingDraftSchema || !feedback.trim() || isPending
+                  }
+                  onClick={handleUpdateDraftSchema}
+                >
+                  <Image src={SendIcon} alt="send" />
+                </Button>
+              </div>
+            </>
+          )}
         </div>
       )}
     </div>

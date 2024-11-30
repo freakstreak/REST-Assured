@@ -23,6 +23,8 @@
     - role: user
       permission:
         columns:
+          - application_id
+          - id
           - json
           - status
         filter:

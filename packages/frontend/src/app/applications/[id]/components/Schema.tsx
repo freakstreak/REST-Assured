@@ -2,18 +2,62 @@ import React from "react";
 
 import { Button } from "@/components/ui/button";
 
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createSchema, getSchemas } from "@/services/schemaServices";
+
+import { useToast } from "@/hooks/use-toast";
+import SchemaView from "@/app/applications/[id]/components/SchemaView";
+
 type Props = {
-  schema: string[];
+  applicationId: string | undefined;
+  isGenerated: boolean;
 };
 
-const Schema = ({}: Props) => {
+const Schema = ({ applicationId, isGenerated }: Props) => {
+  const { toast } = useToast();
+
+  const queryClient = useQueryClient();
+
+  const { data: schemas } = useQuery({
+    queryKey: ["schemas", applicationId?.toString()],
+    queryFn: () => getSchemas(applicationId as string),
+  });
+
+  const { mutate: createSchemaMutation, isPending } = useMutation({
+    mutationFn: createSchema,
+  });
+
+  const handleCreateSchema = () => {
+    if (!applicationId) return;
+
+    createSchemaMutation(applicationId, {
+      onSuccess: () => {
+        toast({
+          title: "Schema created successfully",
+        });
+
+        queryClient.invalidateQueries({
+          queryKey: ["schemas", applicationId?.toString()],
+        });
+      },
+    });
+  };
+
   return (
     <div className="space-y-3">
-      <p className="text-sm text-gray-500">
-        Schema has not been generated yet.
-      </p>
+      {!isGenerated ? (
+        <>
+          <p className="text-sm text-gray-500">
+            Schema has not been generated yet.
+          </p>
 
-      <Button>Generate Schema</Button>
+          <Button onClick={handleCreateSchema} disabled={isPending}>
+            {isPending ? "Generating..." : "Generate Schema"}
+          </Button>
+        </>
+      ) : (
+        <SchemaView loading={isPending} schemas={schemas} />
+      )}
     </div>
   );
 };

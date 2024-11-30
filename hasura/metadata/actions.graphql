@@ -1,5 +1,5 @@
 type Mutation {
-  acticreateApplicationonName(
+  createApplication(
     name: String!
     description: String!
   ): CreateApplicationResponse

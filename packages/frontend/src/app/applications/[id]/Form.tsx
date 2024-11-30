@@ -28,9 +28,28 @@ const Form = ({ applicationId, name, description, status }: Props) => {
       case Step.DETAILS:
         return <Details name={name} description={description} />;
       case Step.FEATURES_GENERATION:
-        return <Features applicationId={applicationId} features={[]} />;
+        return (
+          <Features
+            applicationId={applicationId}
+            isGenerated={
+              status !== Step.FEATURES_GENERATION &&
+              status !== Step.DETAILS &&
+              status !== null
+            }
+          />
+        );
       case Step.SCHEMA:
-        return <Schema schema={[]} />;
+        return (
+          <Schema
+            applicationId={applicationId}
+            isGenerated={
+              status !== Step.FEATURES_GENERATION &&
+              status !== Step.SCHEMA &&
+              status !== Step.DETAILS &&
+              status !== null
+            }
+          />
+        );
       case Step.ENDPOINTS:
         return <Endpoints endpoints={[]} />;
       case Step.OPERATION_SELECTION:

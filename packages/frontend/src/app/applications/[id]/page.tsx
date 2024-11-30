@@ -20,7 +20,10 @@ const Application = () => {
     queryFn: () => getApplicationById(id as string),
   });
 
-  const status = (application?.status as Step) || Step.FEATURES_GENERATION;
+  const status =
+    application?.status !== "pending" && application?.status !== null
+      ? (application?.status as Step)
+      : Step.FEATURES_GENERATION;
 
   return (
     <div className="flex flex-col min-h-screen">

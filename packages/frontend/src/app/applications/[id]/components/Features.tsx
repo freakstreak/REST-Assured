@@ -1,21 +1,30 @@
 import React from "react";
 
 import { Button } from "@/components/ui/button";
+import FeatureList from "@/app/applications/[id]/FeatureList";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { generateFeatures } from "@/services/draftSchemaService";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  generateFeatures,
+  getDraftSchemas,
+} from "@/services/draftSchemaService";
 
 import { useToast } from "@/hooks/use-toast";
 
 type Props = {
   applicationId: string | undefined;
-  features: string[];
+  isGenerated: boolean;
 };
 
-const Features = ({ applicationId }: Props) => {
+const Features = ({ applicationId, isGenerated }: Props) => {
   const { toast } = useToast();
 
   const queryClient = useQueryClient();
+
+  const { data: draftSchemas } = useQuery({
+    queryKey: ["draftSchemas", applicationId?.toString()],
+    queryFn: () => getDraftSchemas(applicationId as string),
+  });
 
   const { mutate: generateFeaturesMutation, isPending } = useMutation({
     mutationFn: generateFeatures,
@@ -28,7 +37,6 @@ const Features = ({ applicationId }: Props) => {
       onSuccess: () => {
         toast({
           title: "Features generated successfully",
-          description: "Features have been generated successfully",
         });
 
         queryClient.invalidateQueries({
@@ -40,13 +48,19 @@ const Features = ({ applicationId }: Props) => {
 
   return (
     <div className="space-y-3">
-      <p className="text-sm text-gray-500">
-        Features have not been generated yet.
-      </p>
+      {!isGenerated ? (
+        <>
+          <p className="text-sm text-gray-500">
+            Features have not been generated yet.
+          </p>
 
-      <Button onClick={handleGenerateFeatures} disabled={isPending}>
-        {isPending ? "Generating..." : "Generate Features"}
-      </Button>
+          <Button onClick={handleGenerateFeatures} disabled={isPending}>
+            {isPending ? "Generating..." : "Generate Features"}
+          </Button>
+        </>
+      ) : (
+        <FeatureList loading={isPending} features={draftSchemas?.json} />
+      )}
     </div>
   );
 };
