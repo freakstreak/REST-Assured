@@ -15,6 +15,7 @@ import { useAuth } from "@/contexts/AuthContext";
 
 export function LoginForm() {
   const [form, setForm] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
 
   const { login } = useAuth();
   const router = useRouter();
@@ -35,6 +36,13 @@ export function LoginForm() {
     try {
       loginMutation.mutate(form, {
         onSuccess: (data) => {
+          const success = data.success;
+
+          if (!success) {
+            setError(data.message);
+            return;
+          }
+
           login(data.data);
           setForm({ email: "", password: "" });
 
@@ -84,6 +92,8 @@ export function LoginForm() {
               placeholder="Your Password"
             />
           </div>
+
+          {error && <p className="text-red-500 text-sm">{error}</p>}
         </div>
 
         <div className="space-y-3 mt-6">

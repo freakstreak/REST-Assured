@@ -1,5 +1,4 @@
 import React from "react";
-// import { useParams } from "next/navigation";
 
 import {
   Accordion,
@@ -16,18 +15,20 @@ import Operations from "@/app/applications/[id]/components/Operations";
 
 import { Step } from "@/types/step";
 
-const Form = () => {
-  // const { id } = useParams();
+type Props = {
+  applicationId: string | undefined;
+  name: string | undefined;
+  description: string | null | undefined;
+  status: Step;
+};
 
-  const name = "Test Application";
-  const description = "Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.";
-
+const Form = ({ applicationId, name, description, status }: Props) => {
   const getAccordionContent = (step: Step) => {
     switch (step) {
       case Step.DETAILS:
         return <Details name={name} description={description} />;
       case Step.FEATURES_GENERATION:
-        return <Features features={[]} />;
+        return <Features applicationId={applicationId} features={[]} />;
       case Step.SCHEMA:
         return <Schema schema={[]} />;
       case Step.ENDPOINTS:
@@ -43,6 +44,7 @@ const Form = () => {
     <Accordion
       type="multiple"
       className="w-full px-4 max-h-screen overflow-auto"
+      defaultValue={[status]}
     >
       {Object.values(Step).map((step) => (
         <AccordionItem value={step} key={step}>

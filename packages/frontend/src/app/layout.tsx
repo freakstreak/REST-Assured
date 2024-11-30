@@ -4,6 +4,8 @@ import { Poppins } from "next/font/google";
 import QueryClientProvider from "@/providers/QueryClientProvider";
 import { AuthProvider } from "@/contexts/AuthContext";
 
+import { Toaster } from "@/components/ui/toaster";
+
 import "./globals.css";
 
 const poppins = Poppins({
@@ -26,7 +28,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${poppins.variable} ${poppins.variable} antialiased`}>
         <AuthProvider>
-          <QueryClientProvider>{children}</QueryClientProvider>
+          <QueryClientProvider>
+            {children}
+
+            <Toaster  />
+          </QueryClientProvider>
         </AuthProvider>
       </body>
     </html>

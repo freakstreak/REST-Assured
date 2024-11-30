@@ -1,8 +1,8 @@
 import React from "react";
 
 type Props = {
-  name: string;
-  description: string;
+  name: string | undefined;
+  description: string | null | undefined;
 };
 
 const Details = ({ name, description }: Props) => {

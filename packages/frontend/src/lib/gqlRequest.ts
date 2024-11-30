@@ -19,6 +19,7 @@ async function middleware(request: RequestInit) {
     headers: {
       ...request.headers,
       Authorization: `Bearer ${token}`,
+      // "x-hasura-admin-secret": "admin-secret", // TODO: remove this and use the token
       "content-type": "application/json",
     },
   };
