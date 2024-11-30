@@ -68,6 +68,23 @@
           table:
             name: operations
             schema: public
+  select_permissions:
+    - role: user
+      permission:
+        columns:
+          - application_id
+          - created_at
+          - description
+          - id
+          - is_active
+          - name
+          - updated_at
+        filter:
+          application:
+            user_id:
+              _eq: X-Hasura-User-Id
+        allow_aggregations: true
+      comment: ""
 - table:
     name: model
     schema: public
@@ -83,6 +100,24 @@
           table:
             name: operations
             schema: public
+  select_permissions:
+    - role: user
+      permission:
+        columns:
+          - created_at
+          - ddl_path
+          - feature_id
+          - id
+          - model_path
+          - updated_at
+        filter:
+          feature:
+            application:
+              user:
+                id:
+                  _eq: X-Hasura-User-Id
+        allow_aggregations: true
+      comment: ""
 - table:
     name: operations
     schema: public
@@ -93,6 +128,27 @@
     - name: model
       using:
         foreign_key_constraint_on: model_id
+  select_permissions:
+    - role: user
+      permission:
+        columns:
+          - created_at
+          - feature_id
+          - id
+          - is_async
+          - is_authenticated
+          - is_media
+          - model_id
+          - name
+          - updated_at
+        filter:
+          feature:
+            application:
+              user:
+                id:
+                  _eq: X-Hasura-User-Id
+        allow_aggregations: true
+      comment: ""
 - table:
     name: users
     schema: public

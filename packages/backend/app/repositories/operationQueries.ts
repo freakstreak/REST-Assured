@@ -17,6 +17,7 @@ class OperationQueries {
 
     public getFeatureNameByOperationId = `query MyQuery2($id: Int!) {
     operations_by_pk(id: $id) {
+        name
         feature {
                 name
             }
@@ -29,6 +30,14 @@ class OperationQueries {
             name
         }
     }`
+
+    public deleteOperation = `
+        mutation MyMutation3($id: Int!) {
+            delete_operations_by_pk(id: $id) {
+                id
+            }
+        }
+    `;
 }
 
 export default new OperationQueries();
