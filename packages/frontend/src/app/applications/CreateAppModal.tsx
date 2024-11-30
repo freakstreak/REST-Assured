@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import {
   Dialog,
@@ -14,9 +15,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
+import { createApplication } from "@/services/applicationService";
+
+import { useMutation } from "@tanstack/react-query";
+
 const CreateAppModal = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+
+  const router = useRouter();
+
+  const { mutate: createApp, isPending } = useMutation({
+    mutationFn: createApplication,
+  });
+
+  const isDisabled = isPending || !name || !description;
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
@@ -26,6 +39,22 @@ const CreateAppModal = () => {
     e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     setDescription(e.target.value);
+  };
+
+  const handleSubmit = () => {
+    createApp(
+      { name, description },
+      {
+        onSuccess: (data) => {
+          const { id } = data.data;
+
+          router.push(`/applications/${id}`);
+
+          setName("");
+          setDescription("");
+        },
+      }
+    );
   };
 
   return (
@@ -70,8 +99,9 @@ const CreateAppModal = () => {
         </div>
 
         <div className="flex justify-end gap-x-3">
-          <Button variant="outline">Cancel</Button>
-          <Button>Create</Button>
+          <Button disabled={isDisabled} onClick={handleSubmit}>
+            {isPending ? "Creating..." : "Create"}
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

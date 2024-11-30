@@ -40,7 +40,10 @@ const Form = () => {
   };
 
   return (
-    <Accordion type="multiple" className="w-full px-4">
+    <Accordion
+      type="multiple"
+      className="w-full px-4 max-h-screen overflow-auto"
+    >
       {Object.values(Step).map((step) => (
         <AccordionItem value={step} key={step}>
           <AccordionTrigger className="text-xl font-semibold">
