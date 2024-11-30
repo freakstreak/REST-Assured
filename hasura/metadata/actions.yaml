@@ -4,6 +4,8 @@ actions:
       kind: synchronous
       handler: '{{ACTION_BASE_URL}}/application'
       forward_client_headers: true
+    permissions:
+      - role: user
   - name: login
     definition:
       kind: synchronous
