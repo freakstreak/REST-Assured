@@ -1,5 +1,7 @@
 import { Common } from "../common";
 import operationQueries from "../repositories/operationQueries";
+import { createOperationFile, deleteOperationFile } from '../helpers/fs-write-operations';
+import * as path from 'path';
 
 class OperationController {
     public static async createOperation(req: any, res: any): Promise<any> {
@@ -26,8 +28,16 @@ class OperationController {
             const featureId = getFeatureId?.data?.data?.model_by_pk?.feature_id;
             const featureName = getFeatureId?.data?.data?.model_by_pk?.feature?.name;
 
-            //
-            
+            // Create operation file with specified content
+            const operationFileResult = createOperationFile({
+                featureName,
+                operationName: name,
+                baseDir: path.resolve(__dirname, '../../../../user-applications/backend')
+            });
+
+            if (!operationFileResult.success) {
+                return Common.Response(res, false, operationFileResult.message, null);
+            }
 
             const { data } = await Common.GQLRequest({
                 variables: { feature_id: featureId, model_id: modelId, name: name },
@@ -64,8 +74,17 @@ class OperationController {
 
             const featureName = feature?.data?.data?.operations_by_pk?.feature?.name;
 
-            //
+            // create operation file
 
+            const operationFileResult = createOperationFile({
+                featureName,
+                operationName: name,
+                baseDir: path.resolve(__dirname, '../../../../user-applications/backend')
+            });
+
+            if (!operationFileResult.success) {
+                return Common.Response(res, false, operationFileResult.message, null);
+            }
 
             const { data } = await Common.GQLRequest({
                 variables: { id: id, name: name },
@@ -99,7 +118,17 @@ class OperationController {
             const featureName = feature?.data?.data?.operations_by_pk?.feature?.name;
             const operationName = feature?.data?.data?.operations_by_pk?.name;
 
-            // delete file
+            // delete operation file
+
+            const operationFileResult = deleteOperationFile({
+                featureName,
+                operationName,
+                baseDir: path.resolve(__dirname, '../../../../user-applications/backend')
+            });
+
+            if (!operationFileResult.success) {
+                return Common.Response(res, false, operationFileResult.message, null);
+            }
 
             const { data } = await Common.GQLRequest({
                 variables: { id: id },
