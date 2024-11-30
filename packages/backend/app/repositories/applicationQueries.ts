@@ -21,6 +21,14 @@ class ApplicationQueries {
         id
         json
       }
+      application_schemas {
+        id
+        name
+        json
+        model_path
+        ddl_path
+        status
+       }
     }
   }`;
 }

@@ -1,6 +1,7 @@
 import express from "express";
 import DraftSchemaController from "../controllers/DraftSchemaController";
 import DraftSchemaValidator from "../validators/draftSchema";
+import SchemaController from "../controllers/SchemaController";
 
 const router = express.Router();
 
@@ -14,5 +15,7 @@ router.put(
   DraftSchemaValidator.update,
   DraftSchemaController.update
 );
+
+router.post("/schema", SchemaController.create);
 
 export default router;
