@@ -5,6 +5,55 @@
     - name: application
       using:
         foreign_key_constraint_on: application_id
+  insert_permissions:
+    - role: user
+      permission:
+        check:
+          application:
+            user:
+              id:
+                _eq: X-Hasura-User-Id
+        columns:
+          - application_id
+          - id
+          - json
+          - status
+      comment: ""
+  select_permissions:
+    - role: user
+      permission:
+        columns:
+          - json
+          - status
+        filter:
+          application:
+            user:
+              id:
+                _eq: X-Hasura-User-Id
+        allow_aggregations: true
+      comment: ""
+  update_permissions:
+    - role: user
+      permission:
+        columns:
+          - json
+          - status
+        filter:
+          application:
+            user:
+              id:
+                _eq: X-Hasura-User-Id
+        check: null
+      comment: ""
+  delete_permissions:
+    - role: user
+      permission:
+        filter:
+          application:
+            user:
+              id:
+                _eq: X-Hasura-User-Id
+      comment: ""
 - table:
     name: application_schemas
     schema: public
@@ -20,6 +69,74 @@
           table:
             name: operations
             schema: public
+  insert_permissions:
+    - role: user
+      permission:
+        check:
+          application:
+            user:
+              id:
+                _eq: X-Hasura-User-Id
+        columns:
+          - ddl_path
+          - model_path
+          - name
+          - application_id
+          - id
+          - json
+          - status
+          - created_at
+          - updated_at
+      comment: ""
+  select_permissions:
+    - role: user
+      permission:
+        columns:
+          - ddl_path
+          - model_path
+          - name
+          - application_id
+          - id
+          - json
+          - status
+          - created_at
+          - updated_at
+        filter:
+          application:
+            user:
+              id:
+                _eq: X-Hasura-User-Id
+        allow_aggregations: true
+      comment: ""
+  update_permissions:
+    - role: user
+      permission:
+        columns:
+          - ddl_path
+          - model_path
+          - name
+          - application_id
+          - id
+          - json
+          - status
+          - created_at
+          - updated_at
+        filter:
+          application:
+            user:
+              id:
+                _eq: X-Hasura-User-Id
+        check: null
+      comment: ""
+  delete_permissions:
+    - role: user
+      permission:
+        filter:
+          application:
+            user:
+              id:
+                _eq: X-Hasura-User-Id
+      comment: ""
 - table:
     name: applications
     schema: public
@@ -51,6 +168,56 @@
           table:
             name: application_schemas
             schema: public
+  insert_permissions:
+    - role: user
+      permission:
+        check:
+          user_id:
+            _eq: X-Hasura-User-Id
+        columns:
+          - name
+          - id
+          - description
+          - created_at
+          - updated_at
+          - status
+          - user_id
+      comment: ""
+  select_permissions:
+    - role: user
+      permission:
+        columns:
+          - created_at
+          - description
+          - id
+          - name
+          - status
+          - updated_at
+          - user_id
+        filter:
+          user_id:
+            _eq: X-Hasura-User-Id
+        allow_aggregations: true
+      comment: ""
+  update_permissions:
+    - role: user
+      permission:
+        columns:
+          - description
+          - name
+          - status
+        filter:
+          user_id:
+            _eq: X-Hasura-User-Id
+        check: null
+      comment: ""
+  delete_permissions:
+    - role: user
+      permission:
+        filter:
+          user_id:
+            _eq: X-Hasura-User-Id
+      comment: ""
 - table:
     name: operations
     schema: public
@@ -58,6 +225,75 @@
     - name: application_schema
       using:
         foreign_key_constraint_on: application_schema_id
+  insert_permissions:
+    - role: user
+      permission:
+        check:
+          application_schema:
+            application:
+              user:
+                id:
+                  _eq: X-Hasura-User-Id
+        columns:
+          - is_async
+          - is_authenticated
+          - is_media
+          - name
+          - application_schema_id
+          - id
+          - created_at
+          - updated_at
+      comment: ""
+  select_permissions:
+    - role: user
+      permission:
+        columns:
+          - is_async
+          - is_authenticated
+          - is_media
+          - name
+          - application_schema_id
+          - id
+          - created_at
+          - updated_at
+        filter:
+          application_schema:
+            application:
+              user:
+                id:
+                  _eq: X-Hasura-User-Id
+        allow_aggregations: true
+      comment: ""
+  update_permissions:
+    - role: user
+      permission:
+        columns:
+          - is_async
+          - is_authenticated
+          - is_media
+          - name
+          - application_schema_id
+          - id
+          - created_at
+          - updated_at
+        filter:
+          application_schema:
+            application:
+              user:
+                id:
+                  _eq: X-Hasura-User-Id
+        check: null
+      comment: ""
+  delete_permissions:
+    - role: user
+      permission:
+        filter:
+          application_schema:
+            application:
+              user:
+                id:
+                  _eq: X-Hasura-User-Id
+      comment: ""
 - table:
     name: users
     schema: public
