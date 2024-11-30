@@ -1,6 +1,39 @@
 - table:
     name: applications
     schema: public
+  select_permissions:
+    - role: user
+      permission:
+        columns:
+          - created_at
+          - description
+          - id
+          - name
+          - status
+          - updated_at
+        filter:
+          user_id:
+            _eq: X-Hasura-User-Id
+        allow_aggregations: true
+      comment: ""
+  update_permissions:
+    - role: user
+      permission:
+        columns:
+          - description
+          - name
+        filter:
+          user_id:
+            _eq: X-Hasura-User-Id
+        check: null
+      comment: ""
+  delete_permissions:
+    - role: user
+      permission:
+        filter:
+          user_id:
+            _eq: X-Hasura-User-Id
+      comment: ""
 - table:
     name: features
     schema: public
