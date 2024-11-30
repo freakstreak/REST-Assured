@@ -1,4 +1,4 @@
 -- Could not auto-generate a down migration.
 -- Please write an appropriate down migration for the SQL below:
--- alter table "public"."operations" add column "model_id" integer
---  not null;
+-- alter table "public"."application_schemas" add column "status" text
+--  null default 'draft';

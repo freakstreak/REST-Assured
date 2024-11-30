@@ -1,9 +1,0 @@
-CREATE TABLE model (
-    id SERIAL PRIMARY KEY,
-    feature_id INT NOT NULL,
-    model_path VARCHAR(500) NOT NULL,
-    ddl_path VARCHAR(500) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (feature_id) REFERENCES features(id) ON DELETE CASCADE
-);
