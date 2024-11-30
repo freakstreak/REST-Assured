@@ -1,0 +1,1 @@
+CREATE TABLE "public"."application_draft_schemas" ("id" serial NOT NULL, "application_id" integer NOT NULL, "json" jsonb, "status" text NOT NULL DEFAULT 'draft', PRIMARY KEY ("id") , FOREIGN KEY ("application_id") REFERENCES "public"."applications"("id") ON UPDATE restrict ON DELETE cascade);

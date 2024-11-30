@@ -1,6 +1,52 @@
 - table:
+    name: abc
+    schema: public
+- table:
+    name: application_draft_schemas
+    schema: public
+  object_relationships:
+    - name: application
+      using:
+        foreign_key_constraint_on: application_id
+- table:
+    name: application_schemas
+    schema: public
+  object_relationships:
+    - name: application
+      using:
+        foreign_key_constraint_on: application_id
+  array_relationships:
+    - name: operations
+      using:
+        foreign_key_constraint_on:
+          column: feature_id
+          table:
+            name: operations
+            schema: public
+- table:
     name: applications
     schema: public
+  object_relationships:
+    - name: application_draft_schemas
+      using:
+        manual_configuration:
+          column_mapping:
+            id: application_id
+          insertion_order: null
+          remote_table:
+            name: application_draft_schemas
+            schema: public
+    - name: user
+      using:
+        foreign_key_constraint_on: user_id
+  array_relationships:
+    - name: features
+      using:
+        foreign_key_constraint_on:
+          column: application_id
+          table:
+            name: application_schemas
+            schema: public
   select_permissions:
     - role: user
       permission:
@@ -35,11 +81,12 @@
             _eq: X-Hasura-User-Id
       comment: ""
 - table:
-    name: features
-    schema: public
-- table:
     name: operations
     schema: public
+  object_relationships:
+    - name: feature
+      using:
+        foreign_key_constraint_on: feature_id
 - table:
     name: users
     schema: public
@@ -50,6 +97,14 @@
     custom_column_names:
       id: id
     custom_root_fields: {}
+  array_relationships:
+    - name: applications
+      using:
+        foreign_key_constraint_on:
+          column: user_id
+          table:
+            name: applications
+            schema: public
   select_permissions:
     - role: user
       permission:
