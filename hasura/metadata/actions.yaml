@@ -11,6 +11,8 @@ actions:
       kind: synchronous
       handler: '{{ACTION_BASE_URL}}/operation'
       forward_client_headers: true
+    permissions:
+      - role: user
   - name: login
     definition:
       kind: synchronous
@@ -30,6 +32,8 @@ actions:
       kind: synchronous
       handler: '{{ACTION_BASE_URL}}/operation-update'
       forward_client_headers: true
+    permissions:
+      - role: user
 custom_types:
   enums: []
   input_objects: []
