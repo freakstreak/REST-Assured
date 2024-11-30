@@ -87,7 +87,7 @@ class AuthController {
       const user = data.data.users[0];
 
       // check password with the hashed password
-      const validPassword = await bcrypt.compare(user.password, password);
+      const validPassword = await bcrypt.compare(password, user.password);
       if (!validPassword) {
         return Common.Response(res, false, "Invalid Password", null);
       }
