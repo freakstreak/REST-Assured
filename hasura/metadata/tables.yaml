@@ -1,4 +1,13 @@
 - table:
+    name: applications
+    schema: public
+- table:
+    name: features
+    schema: public
+- table:
+    name: operations
+    schema: public
+- table:
     name: users
     schema: public
   configuration:
