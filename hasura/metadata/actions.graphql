@@ -6,6 +6,13 @@ type Mutation {
 }
 
 type Mutation {
+  createOperation(
+    name: String!
+    modelId: String!
+  ): createOperationResponse
+}
+
+type Mutation {
   login(
     email: String!
     password: String!
@@ -20,12 +27,16 @@ type Mutation {
   ): SignUpResponse
 }
 
+type Mutation {
+  updateOperation(
+    id: Int!
+    name: String!
+  ): createOperationResponse
+}
+
 type SignupData {
-  email: String
-  expiresIn: String
-  id: String
+  id: Int
   name: String
-  token: String
 }
 
 type SignUpResponse {
@@ -45,6 +56,12 @@ type createApplicationData {
 
 type CreateApplicationResponse {
   data: createApplicationData
+  message: String
+  success: Boolean
+}
+
+type createOperationResponse {
+  data: SignupData
   message: String
   success: Boolean
 }
