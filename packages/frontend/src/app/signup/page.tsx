@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -14,7 +14,7 @@ import { signup } from "@/services/auth";
 import { useAuth } from "@/contexts/AuthContext";
 
 export function SignupForm() {
-  const { login, isAuthenticated } = useAuth();
+  const { login } = useAuth();
 
   const router = useRouter();
 
@@ -24,11 +24,8 @@ export function SignupForm() {
     mutationFn: signup,
   });
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      router.push("/dashboard");
-    }
-  }, [isAuthenticated, router]);
+  const isDisabled =
+    signupMutation.isPending || !form.name || !form.email || !form.password;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -43,7 +40,7 @@ export function SignupForm() {
           login(data.data);
           setForm({ name: "", email: "", password: "" });
 
-          router.push("/dashboard");
+          router.push("/applications");
         },
       });
     } catch (error) {
@@ -113,12 +110,8 @@ export function SignupForm() {
             </Link>
           </p>
 
-          <Button
-            disabled={signupMutation.isPending}
-            type="submit"
-            className="w-full"
-          >
-            Sign Up
+          <Button disabled={isDisabled} type="submit" className="w-full">
+            {signupMutation.isPending ? "Signing up..." : "Sign Up"}
           </Button>
         </div>
       </form>

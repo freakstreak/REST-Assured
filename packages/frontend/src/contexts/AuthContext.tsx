@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { getCookie, setCookie, deleteCookie } from "cookies-next";
 
 interface User {
   id: string;
@@ -35,7 +36,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
+    const storedUser = getCookie("user");
 
     if (storedUser) {
       setUser(JSON.parse(storedUser));
@@ -44,13 +45,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const login = (user: User) => {
     setUser(user);
-    console.log(user);
-    localStorage.setItem("user", JSON.stringify(user));
+    setCookie("user", JSON.stringify(user));
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("user");
+    deleteCookie("user");
   };
 
   const isAuthenticated = !!user;
