@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  # Node.js service
+  app:
+    build: .
+    container_name: node_app
+    ports:
+      - "3010:3000"  # Exposes the app on port 3000
+    volumes:
+      - ./backend/:/usr/src/app  # Mounts the backend directory for live updates
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=password
+      - DB_NAME=${{DB_NAME}}
+    depends_on:
+      - db
+
+  # PostgreSQL service
+  db:
+    image: postgres:13
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ${{DB_NAME}}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+# Volumes for persistent data storage
+volumes:
+  postgres_data:
+    driver: local

@@ -1,0 +1,68 @@
+type Mutation {
+  createApplication(
+    name: String!
+    description: String!
+  ): CreateApplicationResponse
+}
+
+type Mutation {
+  createOperation(
+    name: String!
+    modelId: String!
+  ): createOperationResponse
+}
+
+type Mutation {
+  login(
+    email: String!
+    password: String!
+  ): SignUpResponse
+}
+
+type Mutation {
+  signup(
+    name: String!
+    email: String!
+    password: String!
+  ): SignUpResponse
+}
+
+type Mutation {
+  updateOperation(
+    id: Int!
+    name: String!
+  ): createOperationResponse
+}
+
+type SignupData {
+  id: Int
+  name: String
+}
+
+type SignUpResponse {
+  data: SignupData
+  message: String
+  success: Boolean
+}
+
+type createApplicationData {
+  created_at: String
+  description: String
+  id: Int
+  name: String
+  status: String
+  updated_at: String
+}
+
+type CreateApplicationResponse {
+  data: createApplicationData
+  message: String
+  success: Boolean
+}
+
+type createOperationResponse {
+  data: SignupData
+  message: String
+  success: Boolean
+}
+
