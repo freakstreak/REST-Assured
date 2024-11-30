@@ -1,25 +1,23 @@
 class OperationQueries {
-    public getFeatureIdByModelId = `query MyQuery($id: Int!) {
-        model_by_pk(id: $id) {
-            feature_id
-            feature {
-                name
-            }
+    public getFeatureIdByModelId = `query MyQuery2($id: Int!) {
+        application_schemas_by_pk(id: $id) {
+            id
+            name
         }
     }`;
 
-    public addOperationId = `mutation MyMutation($feature_id: Int!, $model_id: Int!, $name: String!) {
-        insert_operations_one(object: {is_authenticated: true, is_async: true, feature_id: $feature_id, is_media: true, model_id: $model_id, name: $name}) {
+    public addOperationId = `mutation MyMutation($application_schema_id: Int!, $name: String! {
+        insert_operations_one(object: {is_authenticated: true, is_async: true, is_media: true, name: $name, application_schema_id: $application_schema_id}) {
             id
             name
         }
     }`
 
     public getFeatureNameByOperationId = `query MyQuery2($id: Int!) {
-    operations_by_pk(id: $id) {
-        name
-        feature {
-                name
+        operations_by_pk(id: $id) {
+            name
+            application_schema {
+            name
             }
         }
     }`

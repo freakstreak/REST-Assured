@@ -4,14 +4,14 @@ import operationQueries from "../repositories/operationQueries";
 class OperationController {
     public static async createOperation(req: any, res: any): Promise<any> {
         try {
-            const { name, modelId } = req.body.input || req.body;
+            const { name, applicationSchemaId } = req.body.input || req.body;
 
             if (name !== 'create' || name !== 'read' || name !== 'update' || name !== 'delete') {
                 return Common.Response(res, false, "Invalid operation name", null);
             }
 
             const getFeatureId = await Common.GQLRequest({
-                variables: { id: modelId },
+                variables: { id: applicationSchemaId },
                 query: operationQueries.getFeatureIdByModelId,
             });
 
@@ -23,14 +23,14 @@ class OperationController {
                 return Common.Response(res, false, "Model not found", null);
             }
 
-            const featureId = getFeatureId?.data?.data?.model_by_pk?.feature_id;
-            const featureName = getFeatureId?.data?.data?.model_by_pk?.feature?.name;
+            const featureId = getFeatureId?.data?.data?.application_schemas_by_pk?.id;
+            const featureName = getFeatureId?.data?.data?.application_schemas_by_pk?.name;
 
             //
             
 
             const { data } = await Common.GQLRequest({
-                variables: { feature_id: featureId, model_id: modelId, name: name },
+                variables: { application_schema_id: applicationSchemaId, name: name },
                 query: operationQueries.addOperationId,
             })
 
@@ -62,7 +62,7 @@ class OperationController {
                 return Common.Response(res, false, feature?.data?.errors[0].message, null);
             }
 
-            const featureName = feature?.data?.data?.operations_by_pk?.feature?.name;
+            const featureName = feature?.data?.data?.operations_by_pk?.application_schema?.name;
 
             //
 
@@ -96,7 +96,7 @@ class OperationController {
                 return Common.Response(res, false, feature?.data?.errors[0].message, null);
             }
 
-            const featureName = feature?.data?.data?.operations_by_pk?.feature?.name;
+            const featureName = feature?.data?.data?.operations_by_pk?.application_schema?.name;
             const operationName = feature?.data?.data?.operations_by_pk?.name;
 
             // delete file

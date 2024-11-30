@@ -1,0 +1,92 @@
+type Mutation {
+  acticreateApplicationonName(
+    name: String!
+    description: String!
+  ): CreateApplicationResponse
+}
+
+type Mutation {
+  createOperation(
+    name: String!
+    applicationSchemaId: String!
+  ): createOperationResponse
+}
+
+type Mutation {
+  deleteOperation(
+    id: Int!
+  ): DeleteOperationResponse
+}
+
+type Mutation {
+  login(
+    email: String!
+    password: String!
+  ): SignUpResponse
+}
+
+type Mutation {
+  signup(
+    name: String!
+    email: String!
+    password: String!
+  ): SignUpResponse
+}
+
+type Mutation {
+  updateOperation(
+    id: Int!
+    name: String!
+  ): createOperationResponse
+}
+
+type CreateApplicationResponse {
+  data: createApplicationData
+  message: String
+  success: Boolean
+}
+
+type createApplicationData {
+  created_at: String
+  description: String
+  id: Int
+  name: String
+  status: String
+  updated_at: String
+}
+
+type SignupData {
+  email: String
+  expiresIn: String
+  id: String
+  name: String
+  token: String
+}
+
+type SignUpResponse {
+  data: SignupData
+  message: String
+  success: Boolean
+}
+
+type createOperationResponse {
+  data: createOperationData
+  message: String
+  success: Boolean
+}
+
+type createOperationData {
+  id: Int
+  name: String
+}
+
+type DeleteOperationResponse {
+  data: DeleteOperationData
+  message: String
+  success: Boolean
+}
+
+type DeleteOperationData {
+  id: Int
+}
+
