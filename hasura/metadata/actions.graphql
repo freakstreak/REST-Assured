@@ -13,6 +13,12 @@ type Mutation {
 }
 
 type Mutation {
+  deleteOperation(
+    id: Int!
+  ): DeleteOperationResponse
+}
+
+type Mutation {
   login(
     email: String!
     password: String!
@@ -64,5 +70,15 @@ type createOperationResponse {
   data: SignupData
   message: String
   success: Boolean
+}
+
+type DeleteOperationResponse {
+  data: DeleteOperationData
+  message: String
+  success: Boolean
+}
+
+type DeleteOperationData {
+  id: Int
 }
 
