@@ -1,55 +1,6 @@
-actions:
-  - name: createApplication
-    definition:
-      kind: synchronous
-      handler: '{{ACTION_BASE_URL}}/application'
-      forward_client_headers: true
-    permissions:
-      - role: user
-  - name: createOperation
-    definition:
-      kind: synchronous
-      handler: '{{ACTION_BASE_URL}}/operation'
-      forward_client_headers: true
-    permissions:
-      - role: user
-  - name: deleteOperation
-    definition:
-      kind: synchronous
-      handler: '{{ACTION_BASE_URL}}/operation-delete'
-      forward_client_headers: true
-    permissions:
-      - role: user
-  - name: login
-    definition:
-      kind: synchronous
-      handler: '{{ACTION_BASE_URL}}/login'
-      forward_client_headers: true
-    permissions:
-      - role: public
-  - name: signup
-    definition:
-      kind: synchronous
-      handler: '{{ACTION_BASE_URL}}/signup'
-      forward_client_headers: true
-    permissions:
-      - role: public
-  - name: updateOperation
-    definition:
-      kind: synchronous
-      handler: '{{ACTION_BASE_URL}}/operation-update'
-      forward_client_headers: true
-    permissions:
-      - role: user
+actions: []
 custom_types:
   enums: []
   input_objects: []
-  objects:
-    - name: SignupData
-    - name: SignUpResponse
-    - name: createApplicationData
-    - name: CreateApplicationResponse
-    - name: createOperationResponse
-    - name: DeleteOperationResponse
-    - name: DeleteOperationData
+  objects: []
   scalars: []
