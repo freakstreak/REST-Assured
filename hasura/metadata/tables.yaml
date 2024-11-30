@@ -8,3 +8,14 @@
     custom_column_names:
       id: id
     custom_root_fields: {}
+  select_permissions:
+    - role: user
+      permission:
+        columns:
+          - email
+          - id
+          - name
+        filter:
+          id:
+            _eq: X-Hasura-User-Id
+      comment: ""

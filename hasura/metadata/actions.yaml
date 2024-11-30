@@ -1,6 +1,22 @@
-actions: []
+actions:
+  - name: login
+    definition:
+      kind: synchronous
+      handler: '{{ACTION_BASE_URL}}/login'
+      forward_client_headers: true
+    permissions:
+      - role: public
+  - name: signup
+    definition:
+      kind: synchronous
+      handler: '{{ACTION_BASE_URL}}/signup'
+      forward_client_headers: true
+    permissions:
+      - role: public
 custom_types:
   enums: []
   input_objects: []
-  objects: []
+  objects:
+    - name: SignupData
+    - name: SignUpResponse
   scalars: []
