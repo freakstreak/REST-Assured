@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post("/operation", OperationController.create);
 router.post("/operation-endpoint", OperationController.createOperationEndpoint);
-router.post("/deployment", DeploymentController.create);
+router.post("/deploy", DeploymentController.create);
 router.post("/endpoints", OperationController.getEndpoints);
 // router.post("/operation", authenticate, OperationController.createOperation);
 // router.post("/operation-update", authenticate, OperationController.updateOperation);

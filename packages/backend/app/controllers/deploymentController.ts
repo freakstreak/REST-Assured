@@ -6,6 +6,7 @@ import path from "path";
 import { copyFile } from "../helpers/fs-copy";
 import { spawn } from "child_process";
 import { appendfile } from "../helpers";
+import deploymentQueries from "../repositories/deploymentQueries";
 
 class DeploymentController {
   public static async create(req: Request, res: any): Promise<any> {
@@ -66,8 +67,22 @@ class DeploymentController {
             ? "Deployment successful"
             : `Deployment failed with code ${code}`;
         await appendfile(logFile, `[EXIT]: ${message}`);
-        return Common.Response(res, code === 0, message);
       });
+
+      const { data: deploymentData } = await Common.GQLRequest({
+        variables: {
+          applicationId: applicationId,
+        },
+        query: deploymentQueries.createDeployment,
+      });
+
+      const deployment = deploymentData?.data?.insert_deployments_one;
+
+      if (!deployment) {
+        return Common.Response(res, false, "Failed to create deployment");
+      }
+
+      return Common.Response(res, true, "Deployment started successfully");
     } catch (error) {
       return Common.Response(res, false, error?.message);
     }
