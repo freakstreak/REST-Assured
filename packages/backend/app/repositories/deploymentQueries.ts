@@ -36,3 +36,5 @@ class DeploymentQueries {
     }
     `;
 }
+
+export default new DeploymentQueries();
