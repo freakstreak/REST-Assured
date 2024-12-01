@@ -19,7 +19,10 @@ import {
   updateDraftSchema,
 } from "@/services/draftSchemaService";
 import { updateStatus } from "@/services/applicationService";
-import { getSchemas } from "@/services/schemaServices";
+import { getSchemas, generateSchema } from "@/services/schemaServices";
+
+import { useToast } from "@/hooks/use-toast";
+import { useApplicationContext } from "@/contexts/ApplicationContext";
 
 type Props = {
   applicationId: string | undefined;
@@ -29,6 +32,8 @@ type Props = {
 const Output = ({ applicationId, status }: Props) => {
   const [feedback, setFeedback] = useState("");
   const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const { loadingFeatures, loadingSchema } = useApplicationContext();
 
   //  draft schemas
   const { data: draftSchemas } = useQuery({
@@ -51,9 +56,16 @@ const Output = ({ applicationId, status }: Props) => {
     queryFn: () => getSchemas(applicationId as string),
   });
 
-  const { mutate: updateStatusMutation, isPending } = useMutation({
+  const { mutateAsync: updateStatusMutation, isPending } = useMutation({
     mutationFn: updateStatus,
   });
+
+  const { mutate: generateSchemaMutation, isPending: isGeneratingSchema } =
+    useMutation({
+      mutationFn: generateSchema,
+    });
+
+  // endpoints
 
   const activeData = useMemo(() => {
     switch (status) {
@@ -69,14 +81,26 @@ const Output = ({ applicationId, status }: Props) => {
       case Step.FEATURES_GENERATION:
         return (
           <FeatureList
-            loading={isUpdatingDraftSchema}
+            loading={isUpdatingDraftSchema || loadingFeatures}
             features={draftSchemas?.json}
           />
         );
       case Step.SCHEMA:
-        return <SchemaView loading={isUpdatingDraftSchema} schemas={schemas} />;
+        return (
+          <SchemaView
+            loading={isUpdatingDraftSchema || loadingSchema}
+            schemas={schemas}
+          />
+        );
     }
-  }, [status, draftSchemas, isUpdatingDraftSchema, schemas]);
+  }, [
+    status,
+    draftSchemas,
+    isUpdatingDraftSchema,
+    schemas,
+    loadingFeatures,
+    loadingSchema,
+  ]);
 
   const handleFeedbackChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFeedback(e.target.value);
@@ -86,16 +110,41 @@ const Output = ({ applicationId, status }: Props) => {
     const steps = Object.values(Step);
     const nextStep = steps[steps.indexOf(status) + 1];
 
-    updateStatusMutation(
-      { id: applicationId as string, status: nextStep },
-      {
+    if (status === Step.SCHEMA) {
+      generateSchemaMutation(applicationId as string, {
         onSuccess: () => {
           queryClient.invalidateQueries({
-            queryKey: ["application", applicationId?.toString()],
+            queryKey: ["schemas", applicationId?.toString()],
           });
+
+          toast({
+            title: "Schema generated successfully",
+          });
+
+          updateStatusMutation(
+            { id: applicationId as string, status: nextStep },
+            {
+              onSuccess: () => {
+                queryClient.invalidateQueries({
+                  queryKey: ["application", applicationId?.toString()],
+                });
+              },
+            }
+          );
         },
-      }
-    );
+      });
+    } else {
+      updateStatusMutation(
+        { id: applicationId as string, status: nextStep },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({
+              queryKey: ["application", applicationId?.toString()],
+            });
+          },
+        }
+      );
+    }
   };
 
   const handleUpdateDraftSchema = () => {
@@ -118,7 +167,9 @@ const Output = ({ applicationId, status }: Props) => {
 
   return (
     <div className="relative flex flex-col gap-y-3 pt-5 border-l border-gray-200 max-h-screen overflow-auto">
-      {activeData && activeData.length > 0 ? (
+      {(activeData && activeData.length > 0) ||
+      loadingSchema ||
+      loadingFeatures ? (
         <RenderedContent />
       ) : (
         <div className="flex flex-col flex-1 gap-y-4 justify-center items-center px-8">
@@ -132,14 +183,16 @@ const Output = ({ applicationId, status }: Props) => {
         </div>
       )}
 
-      {activeData && (
+      {activeData && activeData.length > 0 && (
         <div className="flex flex-col gap-y-2 items-center justify-between bg-white w-full sticky bottom-0 mt-auto z-10 py-4 border-t border-gray-200">
           <Button
             onClick={handleProceed}
             disabled={isPending}
-            className="self-center group"
+            data-loading={isGeneratingSchema}
+            className="self-center group data-[loading='true']:animate-pulse"
           >
-            Proceed
+            {isGeneratingSchema ? "Generating Schema" : "Proceed"}
+
             <Image
               src={ArrowRightIcon}
               alt="arrow-right"
@@ -147,7 +200,7 @@ const Output = ({ applicationId, status }: Props) => {
             />
           </Button>
 
-          {status !== Step.SCHEMA && (
+          {status === Step.FEATURES_GENERATION && (
             <>
               <span className="text-sm text-gray-500 self-center">OR</span>
 

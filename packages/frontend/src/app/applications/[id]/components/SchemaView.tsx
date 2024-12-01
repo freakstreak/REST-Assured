@@ -31,9 +31,9 @@ const SchemaView = ({ loading, schemas }: Props) => {
     <div className="flex flex-col gap-y-2">
       <h2 className="text-lg font-medium px-4">Schema</h2>
 
-      <div className="flex justify-center gap-y-2 bg-gray-100 rounded-lg p-4 mx-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-y-2 bg-gray-100 rounded-lg p-4 mx-4">
         {loading ? (
-          <Skeleton className="w-full h-72" />
+          <Skeleton className="w-full h-72 md:col-span-3" />
         ) : (
           <>
             {schemas?.map((schema) => {

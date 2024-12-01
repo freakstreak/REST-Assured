@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Accordion,
@@ -23,6 +23,8 @@ type Props = {
 };
 
 const Form = ({ applicationId, name, description, status }: Props) => {
+  const [openItems, setOpenItems] = useState([status]);
+
   const getAccordionContent = (step: Step) => {
     const stepsArray = Object.values(Step);
 
@@ -32,6 +34,7 @@ const Form = ({ applicationId, name, description, status }: Props) => {
     switch (step) {
       case Step.DETAILS:
         return <Details name={name} description={description} />;
+
       case Step.FEATURES_GENERATION:
         return (
           <Features
@@ -44,6 +47,7 @@ const Form = ({ applicationId, name, description, status }: Props) => {
             isDisabled={isDisabled}
           />
         );
+
       case Step.SCHEMA:
         return (
           <Schema
@@ -57,6 +61,7 @@ const Form = ({ applicationId, name, description, status }: Props) => {
             isDisabled={isDisabled}
           />
         );
+
       case Step.ENDPOINTS:
         return (
           <Endpoints
@@ -72,20 +77,26 @@ const Form = ({ applicationId, name, description, status }: Props) => {
         );
       case Step.OPERATION_SELECTION:
         return <Operations isDisabled={isDisabled} />;
+
       case Step.DEPLOYMENT:
         return <Deployment isDisabled={isDisabled} />;
     }
   };
 
+  useEffect(() => {
+    setOpenItems([status]);
+  }, [status]);
+
   return (
     <Accordion
       type="multiple"
       className="w-full px-4 max-h-screen overflow-auto"
-      defaultValue={[status]}
+      value={openItems}
+      onValueChange={(value) => setOpenItems(value as unknown as Step[])}
     >
       {Object.values(Step).map((step) => (
         <AccordionItem value={step} key={step}>
-          <AccordionTrigger className="text-xl font-semibold">
+          <AccordionTrigger className="text-lg font-semibold">
             {step}
           </AccordionTrigger>
 

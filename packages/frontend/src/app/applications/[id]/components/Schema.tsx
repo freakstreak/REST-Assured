@@ -7,6 +7,7 @@ import { createSchema, getSchemas } from "@/services/schemaServices";
 
 import { useToast } from "@/hooks/use-toast";
 import SchemaView from "@/app/applications/[id]/components/SchemaView";
+import { useApplicationContext } from "@/contexts/ApplicationContext";
 
 type Props = {
   applicationId: string | undefined;
@@ -16,8 +17,8 @@ type Props = {
 
 const Schema = ({ applicationId, isGenerated, isDisabled }: Props) => {
   const { toast } = useToast();
-
   const queryClient = useQueryClient();
+  const { setLoadingSchema } = useApplicationContext();
 
   const { data: schemas } = useQuery({
     queryKey: ["schemas", applicationId?.toString()],
@@ -31,6 +32,8 @@ const Schema = ({ applicationId, isGenerated, isDisabled }: Props) => {
   const handleCreateSchema = () => {
     if (!applicationId) return;
 
+    setLoadingSchema(true);
+
     createSchemaMutation(applicationId, {
       onSuccess: () => {
         toast({
@@ -40,6 +43,8 @@ const Schema = ({ applicationId, isGenerated, isDisabled }: Props) => {
         queryClient.invalidateQueries({
           queryKey: ["schemas", applicationId?.toString()],
         });
+
+        setLoadingSchema(false);
       },
     });
   };

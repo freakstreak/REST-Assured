@@ -10,7 +10,7 @@ import {
 } from "@/services/draftSchemaService";
 
 import { useToast } from "@/hooks/use-toast";
-
+import { useApplicationContext } from "@/contexts/ApplicationContext";
 type Props = {
   applicationId: string | undefined;
   isGenerated: boolean;
@@ -18,6 +18,7 @@ type Props = {
 };
 
 const Features = ({ applicationId, isGenerated, isDisabled }: Props) => {
+  const { setLoadingFeatures } = useApplicationContext();
   const { toast } = useToast();
 
   const queryClient = useQueryClient();
@@ -34,6 +35,8 @@ const Features = ({ applicationId, isGenerated, isDisabled }: Props) => {
   const handleGenerateFeatures = () => {
     if (!applicationId) return;
 
+    setLoadingFeatures(true);
+
     generateFeaturesMutation(applicationId, {
       onSuccess: () => {
         toast({
@@ -43,6 +46,8 @@ const Features = ({ applicationId, isGenerated, isDisabled }: Props) => {
         queryClient.invalidateQueries({
           queryKey: ["draftSchemas", applicationId.toString()],
         });
+
+        setLoadingFeatures(false);
       },
     });
   };

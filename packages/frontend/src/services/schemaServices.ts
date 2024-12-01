@@ -23,10 +23,10 @@ export const getSchemas = async (applicationId: string) => {
   return response.application_schemas;
 };
 
-// export const generateSchema = async (applicationId: string) => {
-//   const response = await axios.post(`${API_URL}/schema`, {
-//     applicationId,
-//   });
+export const generateSchema = async (applicationId: string) => {
+  const response = await axios.post(`${API_URL}/schema/model`, {
+    applicationId,
+  });
 
-//   return response.data;
-// };
+  return response.data;
+};

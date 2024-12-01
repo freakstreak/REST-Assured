@@ -30,7 +30,7 @@ const EndpointsTable = ({ endpoints, viewOnly }: Props) => {
         e.name === name
           ? {
               ...e,
-              operations: { ...e.operations, [action]: !e.operations[action] },
+              [action]: !e[action],
             }
           : e
       );
@@ -66,7 +66,7 @@ const EndpointsTable = ({ endpoints, viewOnly }: Props) => {
               <input
                 type="checkbox"
                 className="text-sm"
-                checked={selectedEndpoints[i].operations.create}
+                checked={selectedEndpoints[i].create}
                 onChange={() => handleCheck(endpoint.name, "create")}
                 name={`${endpoint.name}-create`}
                 disabled={viewOnly}
@@ -77,7 +77,7 @@ const EndpointsTable = ({ endpoints, viewOnly }: Props) => {
               <input
                 type="checkbox"
                 className="text-sm"
-                checked={selectedEndpoints[i].operations.read}
+                checked={selectedEndpoints[i].read}
                 onChange={() => handleCheck(endpoint.name, "read")}
                 name={`${endpoint.name}-read`}
                 disabled={viewOnly}
@@ -88,7 +88,7 @@ const EndpointsTable = ({ endpoints, viewOnly }: Props) => {
               <input
                 type="checkbox"
                 className="text-sm"
-                checked={selectedEndpoints[i].operations.update}
+                checked={selectedEndpoints[i].update}
                 onChange={() => handleCheck(endpoint.name, "update")}
                 name={`${endpoint.name}-update`}
                 disabled={viewOnly}
@@ -99,7 +99,7 @@ const EndpointsTable = ({ endpoints, viewOnly }: Props) => {
               <input
                 type="checkbox"
                 className="text-sm"
-                checked={selectedEndpoints[i].operations.delete}
+                checked={selectedEndpoints[i].delete}
                 onChange={() => handleCheck(endpoint.name, "delete")}
                 name={`${endpoint.name}-delete`}
                 disabled={viewOnly}
