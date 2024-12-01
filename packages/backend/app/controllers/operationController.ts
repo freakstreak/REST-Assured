@@ -175,6 +175,73 @@ class OperationController {
     }
   }
 
+  public static async getEndpoints(req: any, res: any): Promise<any> {
+    const { applicationId } = req.body;
+
+    if (!applicationId) {
+      return Common.Response(res, false, "Application ID is required");
+    }
+    // Fetch application details
+    const { data: application } = await Common.GQLRequest({
+      variables: { id: applicationId },
+      query: applicationQueries.getApplicationById,
+    });
+
+    if (application?.errors) {
+      return Common.Response(res, false, application?.errors[0].message);
+    }
+
+    // Fetch operations by application ID
+    const { data: applicationSchemaOperation } = await Common.GQLRequest({
+      variables: { applicationId },
+      query: operationQueries.getOperationsByApplicationId,
+    });
+
+    if (applicationSchemaOperation?.errors) {
+      return Common.Response(
+        res,
+        false,
+        applicationSchemaOperation?.errors[0].message
+      );
+    }
+
+    const operations = applicationSchemaOperation?.data?.operations;
+
+    if (!operations || !operations.length) {
+      return Common.Response(res, true, "No operations found");
+    }
+
+    const endpoints: any[] = [];
+
+    operations.forEach((operation: any) => {
+      const routeName = operation?.application_schema?.route_name;
+      const operationName = operation?.name;
+
+      // Check if an endpoint with the same routeName exists
+      const existingEndpoint = endpoints.find(
+        (endpoint) => endpoint.routeName === routeName
+      );
+
+      if (existingEndpoint) {
+        // Add or update the operationName property for the existing endpoint
+        existingEndpoint[operationName] = true;
+      } else {
+        // Create a new endpoint object and push it to the endpoints array
+        endpoints.push({
+          routeName,
+          [operationName]: true,
+        });
+      }
+    });
+
+    return Common.Response(
+      res,
+      true,
+      "Endpoints fetched successfully",
+      endpoints
+    );
+  }
+
   public static async createOperation(req: any, res: any): Promise<any> {
     try {
       const { name, applicationSchemaId } = req.body.input || req.body;
