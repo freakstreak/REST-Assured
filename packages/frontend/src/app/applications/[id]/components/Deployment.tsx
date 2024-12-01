@@ -11,7 +11,7 @@ type Props = {
   isGenerated: boolean;
 };
 
-const Deployment = ({ isDisabled, applicationId, isGenerated }: Props) => {
+const Deployment = ({ isDisabled, applicationId }: Props) => {
   const { mutate: deployment, isPending } = useMutation({
     mutationFn: startDeployment,
   });
@@ -26,7 +26,7 @@ const Deployment = ({ isDisabled, applicationId, isGenerated }: Props) => {
     deployment(applicationId, {
       onSuccess: () => {
         toast({
-          title: "Schema created successfully",
+          title: "Deployment started successfully",
         });
 
         setIsDeploying(true);
@@ -44,7 +44,7 @@ const Deployment = ({ isDisabled, applicationId, isGenerated }: Props) => {
 
       <Button
         onClick={handleDeployment}
-        disabled={isDisabled || isGenerated || isPending || isDeploying}
+        disabled={isDisabled || isPending || isDeploying}
       >
         Start Deployment
       </Button>

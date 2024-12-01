@@ -24,13 +24,12 @@ const ApiPlayground = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body:
-          method !== "GET" && method !== "DELETE"
-            ? JSON.stringify(requestBody)
-            : undefined,
+        body: method !== "GET" && method !== "DELETE" ? requestBody : undefined,
       });
+
       const data = await response.json();
-      setResponseBody(data);
+
+      setResponseBody(JSON.stringify(data));
     } catch (error) {
       console.error(error);
       setResponseBody(JSON.stringify(error));
@@ -88,7 +87,7 @@ const ApiPlayground = () => {
       <div className="space-y-4">
         <h3 className="font-semibold">Response Body</h3>
 
-        <pre>{responseBody}</pre>
+        <pre className="whitespace-normal">{responseBody}</pre>
       </div>
     </div>
   );
