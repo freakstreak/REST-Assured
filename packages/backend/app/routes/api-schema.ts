@@ -17,5 +17,6 @@ router.put(
 );
 
 router.post("/schema", SchemaController.create);
+router.post("/schema/model", SchemaController.createModelAndMigration);
 
 export default router;

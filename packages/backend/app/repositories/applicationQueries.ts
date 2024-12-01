@@ -30,6 +30,7 @@ class ApplicationQueries {
         model_path
         ddl_path
         status
+        route_name
        }
     }
   }`;
