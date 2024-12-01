@@ -79,7 +79,20 @@ const Form = ({ applicationId, name, description, status }: Props) => {
         return <Operations isDisabled={isDisabled} />;
 
       case Step.DEPLOYMENT:
-        return <Deployment isDisabled={isDisabled} />;
+        return (
+          <Deployment
+            isGenerated={
+              status !== Step.ENDPOINTS &&
+              status !== Step.SCHEMA &&
+              status !== Step.FEATURES_GENERATION &&
+              status !== Step.DETAILS &&
+              status !== Step.DEPLOYMENT &&
+              status !== null
+            }
+            isDisabled={isDisabled}
+            applicationId={applicationId}
+          />
+        );
     }
   };
 
