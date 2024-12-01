@@ -1,4 +1,29 @@
 class OperationQueries {
+  public bulInsertOperations = `mutation MyMutation($objects: [operations_insert_input!] = []) {
+      insert_operations(objects: $objects) {
+        returning {
+          name
+          id
+          application_schema_id
+        }
+      }
+    }
+    `;
+
+  public getOperationsByApplicationId = `query MyQuery2($applicationId: Int!) {
+    operations(where: {application_schema: {application_id: {_eq: $applicationId}}}) {
+      id
+      name
+      application_schema {
+        application {
+          file_path
+        }
+        route_name
+      }
+    }
+  }
+  `;
+
   public getFeatureIdByModelId = `query MyQuery2($id: Int!) {
         application_schemas_by_pk(id: $id) {
             id
