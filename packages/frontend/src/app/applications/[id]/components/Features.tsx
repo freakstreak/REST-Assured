@@ -25,6 +25,7 @@ const Features = ({ applicationId, isGenerated, isDisabled }: Props) => {
 
   const { data: draftSchemas } = useQuery({
     queryKey: ["draftSchemas", applicationId?.toString()],
+    enabled: !!applicationId,
     queryFn: () => getDraftSchemas(applicationId as string),
   });
 

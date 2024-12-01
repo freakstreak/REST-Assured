@@ -23,7 +23,11 @@ import { getSchemas, generateSchema } from "@/services/schemaServices";
 
 import { useToast } from "@/hooks/use-toast";
 import { useApplicationContext } from "@/contexts/ApplicationContext";
-import { createOperations, getEndpoints } from "@/services/endpointService";
+import {
+  createOperationEndpoints,
+  createOperations,
+  getEndpoints,
+} from "@/services/endpointService";
 import EndpointsTable from "@/app/applications/[id]/components/EndpointsTable";
 
 import { Endpoint } from "@/types/endpoint";
@@ -76,11 +80,19 @@ const Output = ({ applicationId, status }: Props) => {
   // endpoints
   const { data: endpoints, isPending: isLoadingEndpoints } = useQuery({
     queryKey: ["operations", applicationId?.toString()],
+    enabled: !!applicationId,
     queryFn: () => getEndpoints(applicationId as string),
   });
 
   const { mutate: createEndpoints } = useMutation({
     mutationFn: createOperations,
+  });
+
+  const {
+    mutate: createOperationEndpointsMutation,
+    isPending: isCreatingOperationEndpoints,
+  } = useMutation({
+    mutationFn: createOperationEndpoints,
   });
 
   const activeData = useMemo(() => {
@@ -128,24 +140,28 @@ const Output = ({ applicationId, status }: Props) => {
     } else if (status === Step.ENDPOINTS) {
       createEndpoints(selectedEndpoints, {
         onSuccess: () => {
-          toast({
-            title: "Endpoints selected successfully",
-          });
+          createOperationEndpointsMutation(applicationId as string, {
+            onSuccess: () => {
+              updateStatusMutation(
+                { id: applicationId as string, status: nextStep },
+                {
+                  onSuccess: () => {
+                    queryClient.invalidateQueries({
+                      queryKey: ["operations", applicationId?.toString()],
+                    });
 
-          queryClient.invalidateQueries({
-            queryKey: ["operations", applicationId?.toString()],
-          });
+                    queryClient.invalidateQueries({
+                      queryKey: ["application", applicationId?.toString()],
+                    });
 
-          updateStatusMutation(
-            { id: applicationId as string, status: nextStep },
-            {
-              onSuccess: () => {
-                queryClient.invalidateQueries({
-                  queryKey: ["application", applicationId?.toString()],
-                });
-              },
-            }
-          );
+                    toast({
+                      title: "Endpoints generated successfully",
+                    });
+                  },
+                }
+              );
+            },
+          });
         },
       });
     } else {
@@ -276,11 +292,17 @@ const Output = ({ applicationId, status }: Props) => {
           <div className="flex flex-col gap-y-2 items-center justify-between bg-white w-full sticky bottom-0 mt-auto z-10 py-4 border-t border-gray-200">
             <Button
               onClick={handleProceed}
-              disabled={isPending || isGeneratingSchema}
-              data-loading={isGeneratingSchema}
+              disabled={
+                isPending || isGeneratingSchema || isCreatingOperationEndpoints
+              }
+              data-loading={isGeneratingSchema || isCreatingOperationEndpoints}
               className="self-center group data-[loading='true']:animate-pulse"
             >
-              {isGeneratingSchema ? "Generating Schema" : "Proceed"}
+              {isGeneratingSchema
+                ? "Generating Schema"
+                : isCreatingOperationEndpoints
+                ? "Creating Endpoints"
+                : "Proceed"}
 
               <Image
                 src={ArrowRightIcon}

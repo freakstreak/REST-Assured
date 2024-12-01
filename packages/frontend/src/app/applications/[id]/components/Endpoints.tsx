@@ -14,7 +14,7 @@ type Props = {
 const Endpoints = ({ applicationId, isGenerated }: Props) => {
   const { data: operations, isLoading: isLoadingOperations } = useQuery({
     queryKey: ["operations", applicationId?.toString()],
-    enabled: !!isGenerated,
+    enabled: !!isGenerated && !!applicationId,
     queryFn: () => getEndpoints(applicationId as string),
   });
 

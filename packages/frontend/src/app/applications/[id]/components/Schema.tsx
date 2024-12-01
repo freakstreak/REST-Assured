@@ -22,6 +22,7 @@ const Schema = ({ applicationId, isGenerated, isDisabled }: Props) => {
 
   const { data: schemas } = useQuery({
     queryKey: ["schemas", applicationId?.toString()],
+    enabled: !!applicationId,
     queryFn: () => getSchemas(applicationId as string),
   });
 
