@@ -26,17 +26,17 @@ async function routeHandler(routesPath, basePath = "") {
         if (fs.existsSync(routeFile)) {
           const routeHandler = await loadRoute(routeFile, action);
           switch (action) {
-            case "read":
-              router.get("/" + routePath, routeHandler.default);
-              break;
             case "create":
               router.post("/" + routePath, routeHandler.default);
               break;
+            case "read":
+              router.get("/" + routePath, routeHandler.default);
+              break;
             case "update":
-              router.put("/" + routePath, routeHandler.default);
+              router.put("/" + routePath + "/{id}", routeHandler.default);
               break;
             case "delete":
-              router.delete("/" + routePath, routeHandler.default);
+              router.delete("/" + routePath + "/{id}", routeHandler.default);
               break;
             default:
               break;

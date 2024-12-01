@@ -5,6 +5,10 @@ import applicationQueries from "../repositories/applicationQueries";
 import OpenAIService from "../services/openai";
 import SchemaQueries from "../repositories/schemaQueries";
 import createRoute from "../services/createRoute";
+import generatePrismaSchema from "../prompts/genrateModel";
+import { writeFile } from "fs/promises";
+import parsePrismaSchema from "../helpers/parse-prisma";
+import { join } from "path";
 
 class SchemaController {
   public static async createModelAndMigration(
@@ -44,7 +48,37 @@ class SchemaController {
 
       const schemas = application?.application_schemas;
 
-      return Common.Response(res, false, "Not Implemented");
+      const preparedSchemas = schemas.map((schema) => {
+        return schema.json;
+      });
+
+      const prompt = generatePrismaSchema(
+        application.description,
+        preparedSchemas
+      );
+
+      const openAIService = new OpenAIService();
+
+      const response = await openAIService.prompt([
+        {
+          role: "system",
+          content: "You are good at writing schema.prisma file",
+        },
+        { role: "user", content: prompt },
+      ]);
+
+      const prismaFile = response.choices[0].message.content;
+
+      const parsedPrismaFile = parsePrismaSchema(prismaFile);
+      const appPath = application.file_path;
+      const prismaPath = join(appPath, "backend", "prisma");
+      await writeFile(join(prismaPath, "schema.prisma"), parsedPrismaFile);
+
+      return Common.Response(
+        res,
+        true,
+        "Prisma file schema created successfully"
+      );
     } catch (err: any) {
       return Common.Response(res, false, err?.message);
     }
