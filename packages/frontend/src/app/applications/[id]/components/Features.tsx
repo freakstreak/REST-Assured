@@ -14,9 +14,10 @@ import { useToast } from "@/hooks/use-toast";
 type Props = {
   applicationId: string | undefined;
   isGenerated: boolean;
+  isDisabled: boolean;
 };
 
-const Features = ({ applicationId, isGenerated }: Props) => {
+const Features = ({ applicationId, isGenerated, isDisabled }: Props) => {
   const { toast } = useToast();
 
   const queryClient = useQueryClient();
@@ -54,7 +55,10 @@ const Features = ({ applicationId, isGenerated }: Props) => {
             Features have not been generated yet.
           </p>
 
-          <Button onClick={handleGenerateFeatures} disabled={isPending}>
+          <Button
+            onClick={handleGenerateFeatures}
+            disabled={isPending || isDisabled}
+          >
             {isPending ? "Generating..." : "Generate Features"}
           </Button>
         </>

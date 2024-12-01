@@ -191,6 +191,7 @@
         columns:
           - created_at
           - description
+          - file_path
           - id
           - name
           - status

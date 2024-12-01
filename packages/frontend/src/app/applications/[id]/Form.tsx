@@ -24,6 +24,11 @@ type Props = {
 
 const Form = ({ applicationId, name, description, status }: Props) => {
   const getAccordionContent = (step: Step) => {
+    const stepsArray = Object.values(Step);
+
+    const isDisabled =
+      status === null || stepsArray.indexOf(step) > stepsArray.indexOf(status);
+
     switch (step) {
       case Step.DETAILS:
         return <Details name={name} description={description} />;
@@ -36,6 +41,7 @@ const Form = ({ applicationId, name, description, status }: Props) => {
               status !== Step.DETAILS &&
               status !== null
             }
+            isDisabled={isDisabled}
           />
         );
       case Step.SCHEMA:
@@ -48,14 +54,26 @@ const Form = ({ applicationId, name, description, status }: Props) => {
               status !== Step.DETAILS &&
               status !== null
             }
+            isDisabled={isDisabled}
           />
         );
       case Step.ENDPOINTS:
-        return <Endpoints endpoints={[]} />;
+        return (
+          <Endpoints
+            isGenerated={
+              status !== Step.ENDPOINTS &&
+              status !== Step.SCHEMA &&
+              status !== Step.FEATURES_GENERATION &&
+              status !== Step.DETAILS &&
+              status !== null
+            }
+            isDisabled={isDisabled}
+          />
+        );
       case Step.OPERATION_SELECTION:
-        return <Operations operations={[]} />;
+        return <Operations isDisabled={isDisabled} />;
       case Step.DEPLOYMENT:
-        return <Deployment status="pending" />;
+        return <Deployment isDisabled={isDisabled} />;
     }
   };
 

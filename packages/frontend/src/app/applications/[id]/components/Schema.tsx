@@ -11,9 +11,10 @@ import SchemaView from "@/app/applications/[id]/components/SchemaView";
 type Props = {
   applicationId: string | undefined;
   isGenerated: boolean;
+  isDisabled: boolean;
 };
 
-const Schema = ({ applicationId, isGenerated }: Props) => {
+const Schema = ({ applicationId, isGenerated, isDisabled }: Props) => {
   const { toast } = useToast();
 
   const queryClient = useQueryClient();
@@ -51,7 +52,10 @@ const Schema = ({ applicationId, isGenerated }: Props) => {
             Schema has not been generated yet.
           </p>
 
-          <Button onClick={handleCreateSchema} disabled={isPending}>
+          <Button
+            onClick={handleCreateSchema}
+            disabled={isPending || isDisabled}
+          >
             {isPending ? "Generating..." : "Generate Schema"}
           </Button>
         </>

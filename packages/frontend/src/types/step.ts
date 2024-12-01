@@ -2,7 +2,7 @@ export enum Step {
   DETAILS = "Application Details",
   FEATURES_GENERATION = "Features Generation",
   SCHEMA = "Schema Generation",
-  ENDPOINTS = "Endpoint Generation",
-  OPERATION_SELECTION = "Operations Selection",
+  ENDPOINTS = "Endpoint Selection",
+  OPERATION_SELECTION = "Operations Generation",
   DEPLOYMENT = "Deployment",
 }

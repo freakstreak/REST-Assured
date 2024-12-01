@@ -3,17 +3,17 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 
 type Props = {
-  operations: string[];
+  isDisabled: boolean;
 };
 
-const Operations = ({}: Props) => {
+const Operations = ({ isDisabled }: Props) => {
   return (
     <div className="space-y-3">
       <p className="text-sm text-gray-500">
-        Operations have not been selected yet.
+        Operations have not been generated yet.
       </p>
 
-      <Button>Select Operations</Button>
+      <Button disabled={isDisabled}>Select Operations</Button>
     </div>
   );
 };

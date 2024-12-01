@@ -2,17 +2,17 @@ import React from "react";
 
 import { Button } from "@/components/ui/button";
 type Props = {
-  status: "pending" | "deploying" | "deployed";
+  isDisabled: boolean;
 };
 
-const Deployment = ({}: Props) => {
+const Deployment = ({ isDisabled }: Props) => {
   return (
     <div className="space-y-3">
       <p className="text-sm text-gray-500">
         Deployment has not been started yet.
       </p>
 
-      <Button>Start Deployment</Button>
+      <Button disabled={isDisabled}>Start Deployment</Button>
     </div>
   );
 };
