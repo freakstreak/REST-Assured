@@ -287,59 +287,60 @@ const Output = ({ applicationId, status }: Props) => {
         </div>
       )}
 
-      {(activeData && activeData.length > 0) ||
-        (selectedEndpoints && selectedEndpoints.length > 0 && (
-          <div className="flex flex-col gap-y-2 items-center justify-between bg-white w-full sticky bottom-0 mt-auto z-10 py-4 border-t border-gray-200">
-            <Button
-              onClick={handleProceed}
-              disabled={
-                isPending || isGeneratingSchema || isCreatingOperationEndpoints
-              }
-              data-loading={isGeneratingSchema || isCreatingOperationEndpoints}
-              className="self-center group data-[loading='true']:animate-pulse"
-            >
-              {isGeneratingSchema
-                ? "Generating Schema"
-                : isCreatingOperationEndpoints
-                ? "Creating Endpoints"
-                : "Proceed"}
+      {/*  */}
+      {((activeData && activeData.length > 0) ||
+        (selectedEndpoints && selectedEndpoints.length > 0)) && (
+        <div className="flex flex-col gap-y-2 items-center justify-between bg-white w-full sticky bottom-0 mt-auto z-10 py-4 border-t border-gray-200">
+          <Button
+            onClick={handleProceed}
+            disabled={
+              isPending || isGeneratingSchema || isCreatingOperationEndpoints
+            }
+            data-loading={isGeneratingSchema || isCreatingOperationEndpoints}
+            className="self-center group data-[loading='true']:animate-pulse"
+          >
+            {isGeneratingSchema
+              ? "Generating Schema"
+              : isCreatingOperationEndpoints
+              ? "Creating Endpoints"
+              : "Proceed"}
 
-              <Image
-                src={ArrowRightIcon}
-                alt="arrow-right"
-                className="w-4 h-4 group-hover:translate-x-1 transition-transform"
-              />
-            </Button>
+            <Image
+              src={ArrowRightIcon}
+              alt="arrow-right"
+              className="w-4 h-4 group-hover:translate-x-1 transition-transform"
+            />
+          </Button>
 
-            {status === Step.FEATURES_GENERATION && (
-              <>
-                <span className="text-sm text-gray-500 self-center">OR</span>
+          {status === Step.FEATURES_GENERATION && (
+            <>
+              <span className="text-sm text-gray-500 self-center">OR</span>
 
-                <div className="w-full px-4 flex items-center gap-x-2">
-                  <Input
-                    value={feedback}
-                    onChange={handleFeedbackChange}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        handleUpdateDraftSchema();
-                      }
-                    }}
-                    placeholder="Suggest changes"
-                  />
-
-                  <Button
-                    disabled={
-                      isUpdatingDraftSchema || !feedback.trim() || isPending
+              <div className="w-full px-4 flex items-center gap-x-2">
+                <Input
+                  value={feedback}
+                  onChange={handleFeedbackChange}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleUpdateDraftSchema();
                     }
-                    onClick={handleUpdateDraftSchema}
-                  >
-                    <Image src={SendIcon} alt="send" />
-                  </Button>
-                </div>
-              </>
-            )}
-          </div>
-        ))}
+                  }}
+                  placeholder="Suggest changes"
+                />
+
+                <Button
+                  disabled={
+                    isUpdatingDraftSchema || !feedback.trim() || isPending
+                  }
+                  onClick={handleUpdateDraftSchema}
+                >
+                  <Image src={SendIcon} alt="send" />
+                </Button>
+              </div>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 };
