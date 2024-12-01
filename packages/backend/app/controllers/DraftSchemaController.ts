@@ -20,7 +20,6 @@ class DraftSchemaController {
       query: DraftSchemaQueries.getDraftSchemaById,
     });
 
-    console.log(draftSchemaData);
     if (
       !draftSchemaData?.data?.application_draft_schemas_by_pk ||
       draftSchemaData.errors
@@ -118,7 +117,6 @@ class DraftSchemaController {
 
       const application = applicationData?.data?.applications_by_pk;
 
-      console.log(applicationData);
       if (!application) {
         return Common.Response(res, false, "!Application not found");
       }

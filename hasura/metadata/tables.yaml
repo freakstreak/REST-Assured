@@ -170,6 +170,13 @@
           table:
             name: application_schemas
             schema: public
+    - name: deployments
+      using:
+        foreign_key_constraint_on:
+          column: application_id
+          table:
+            name: deployments
+            schema: public
   insert_permissions:
     - role: user
       permission:
@@ -221,6 +228,9 @@
           user_id:
             _eq: X-Hasura-User-Id
       comment: ""
+- table:
+    name: deployments
+    schema: public
 - table:
     name: operations
     schema: public
