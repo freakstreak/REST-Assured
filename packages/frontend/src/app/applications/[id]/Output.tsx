@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +23,10 @@ import { getSchemas, generateSchema } from "@/services/schemaServices";
 
 import { useToast } from "@/hooks/use-toast";
 import { useApplicationContext } from "@/contexts/ApplicationContext";
+import { createOperations, getEndpoints } from "@/services/endpointService";
+import EndpointsTable from "@/app/applications/[id]/components/EndpointsTable";
+
+import { Endpoint } from "@/types/endpoint";
 
 type Props = {
   applicationId: string | undefined;
@@ -33,6 +37,9 @@ const Output = ({ applicationId, status }: Props) => {
   const [feedback, setFeedback] = useState("");
   const queryClient = useQueryClient();
   const { toast } = useToast();
+
+  const [selectedEndpoints, setSelectedEndpoints] = useState<Endpoint[]>([]);
+
   const { loadingFeatures, loadingSchema } = useApplicationContext();
 
   //  draft schemas
@@ -52,7 +59,8 @@ const Output = ({ applicationId, status }: Props) => {
   // schemas
   const { data: schemas } = useQuery({
     queryKey: ["schemas", applicationId?.toString()],
-    enabled: !!applicationId && status === Step.SCHEMA,
+    enabled:
+      !!applicationId && (status === Step.SCHEMA || status === Step.ENDPOINTS),
     queryFn: () => getSchemas(applicationId as string),
   });
 
@@ -66,6 +74,14 @@ const Output = ({ applicationId, status }: Props) => {
     });
 
   // endpoints
+  const { data: endpoints, isPending: isLoadingEndpoints } = useQuery({
+    queryKey: ["operations", applicationId?.toString()],
+    queryFn: () => getEndpoints(applicationId as string),
+  });
+
+  const { mutate: createEndpoints } = useMutation({
+    mutationFn: createOperations,
+  });
 
   const activeData = useMemo(() => {
     switch (status) {
@@ -73,34 +89,10 @@ const Output = ({ applicationId, status }: Props) => {
         return draftSchemas?.json;
       case Step.SCHEMA:
         return schemas;
+      case Step.ENDPOINTS:
+        return endpoints;
     }
-  }, [status, draftSchemas, schemas]);
-
-  const RenderedContent = useCallback(() => {
-    switch (status) {
-      case Step.FEATURES_GENERATION:
-        return (
-          <FeatureList
-            loading={isUpdatingDraftSchema || loadingFeatures}
-            features={draftSchemas?.json}
-          />
-        );
-      case Step.SCHEMA:
-        return (
-          <SchemaView
-            loading={isUpdatingDraftSchema || loadingSchema}
-            schemas={schemas}
-          />
-        );
-    }
-  }, [
-    status,
-    draftSchemas,
-    isUpdatingDraftSchema,
-    schemas,
-    loadingFeatures,
-    loadingSchema,
-  ]);
+  }, [status, draftSchemas, schemas, endpoints]);
 
   const handleFeedbackChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFeedback(e.target.value);
@@ -119,6 +111,29 @@ const Output = ({ applicationId, status }: Props) => {
 
           toast({
             title: "Schema generated successfully",
+          });
+
+          updateStatusMutation(
+            { id: applicationId as string, status: nextStep },
+            {
+              onSuccess: () => {
+                queryClient.invalidateQueries({
+                  queryKey: ["application", applicationId?.toString()],
+                });
+              },
+            }
+          );
+        },
+      });
+    } else if (status === Step.ENDPOINTS) {
+      createEndpoints(selectedEndpoints, {
+        onSuccess: () => {
+          toast({
+            title: "Endpoints selected successfully",
+          });
+
+          queryClient.invalidateQueries({
+            queryKey: ["operations", applicationId?.toString()],
           });
 
           updateStatusMutation(
@@ -165,12 +180,85 @@ const Output = ({ applicationId, status }: Props) => {
     );
   };
 
+  const RenderedContent = useCallback(() => {
+    switch (status) {
+      case Step.FEATURES_GENERATION:
+        return (
+          <FeatureList
+            loading={isUpdatingDraftSchema || loadingFeatures}
+            features={draftSchemas?.json}
+          />
+        );
+      case Step.SCHEMA:
+        return (
+          <SchemaView
+            loading={isUpdatingDraftSchema || loadingSchema}
+            schemas={schemas}
+          />
+        );
+    }
+  }, [
+    status,
+    draftSchemas,
+    isUpdatingDraftSchema,
+    schemas,
+    loadingFeatures,
+    loadingSchema,
+  ]);
+
+  const RenderedEndpoints = useCallback(() => {
+    const getEndpoints = () => {
+      if (!endpoints) {
+        const endpoints = schemas?.map((schema) => ({
+          name: schema.name,
+          create: false,
+          read: false,
+          update: false,
+          delete: false,
+        }));
+
+        return endpoints;
+      }
+
+      return endpoints;
+    };
+
+    return (
+      <EndpointsTable
+        loading={isLoadingEndpoints}
+        endpoints={getEndpoints()}
+        viewOnly={false}
+        selectedEndpoints={selectedEndpoints}
+        setSelectedEndpoints={setSelectedEndpoints}
+      />
+    );
+  }, [endpoints, selectedEndpoints, isLoadingEndpoints, schemas]);
+
+  useEffect(() => {
+    if (schemas) {
+      const points = schemas?.map((schema) => ({
+        name: schema.name,
+        applicationSchemaId: schema.id,
+        create: false,
+        read: false,
+        update: false,
+        delete: false,
+      }));
+
+      setSelectedEndpoints(points);
+    }
+  }, [schemas]);
+
   return (
     <div className="relative flex flex-col gap-y-3 pt-5 border-l border-gray-200 max-h-screen overflow-auto">
       {(activeData && activeData.length > 0) ||
       loadingSchema ||
       loadingFeatures ? (
         <RenderedContent />
+      ) : status === Step.ENDPOINTS ? (
+        <div className="mx-4">
+          <RenderedEndpoints />
+        </div>
       ) : (
         <div className="flex flex-col flex-1 gap-y-4 justify-center items-center px-8">
           <Image src={EmptyIcon} alt="empty" className="w-48 h-48" />
@@ -183,52 +271,53 @@ const Output = ({ applicationId, status }: Props) => {
         </div>
       )}
 
-      {activeData && activeData.length > 0 && (
-        <div className="flex flex-col gap-y-2 items-center justify-between bg-white w-full sticky bottom-0 mt-auto z-10 py-4 border-t border-gray-200">
-          <Button
-            onClick={handleProceed}
-            disabled={isPending}
-            data-loading={isGeneratingSchema}
-            className="self-center group data-[loading='true']:animate-pulse"
-          >
-            {isGeneratingSchema ? "Generating Schema" : "Proceed"}
+      {(activeData && activeData.length > 0) ||
+        (selectedEndpoints && selectedEndpoints.length > 0 && (
+          <div className="flex flex-col gap-y-2 items-center justify-between bg-white w-full sticky bottom-0 mt-auto z-10 py-4 border-t border-gray-200">
+            <Button
+              onClick={handleProceed}
+              disabled={isPending || isGeneratingSchema}
+              data-loading={isGeneratingSchema}
+              className="self-center group data-[loading='true']:animate-pulse"
+            >
+              {isGeneratingSchema ? "Generating Schema" : "Proceed"}
 
-            <Image
-              src={ArrowRightIcon}
-              alt="arrow-right"
-              className="w-4 h-4 group-hover:translate-x-1 transition-transform"
-            />
-          </Button>
+              <Image
+                src={ArrowRightIcon}
+                alt="arrow-right"
+                className="w-4 h-4 group-hover:translate-x-1 transition-transform"
+              />
+            </Button>
 
-          {status === Step.FEATURES_GENERATION && (
-            <>
-              <span className="text-sm text-gray-500 self-center">OR</span>
+            {status === Step.FEATURES_GENERATION && (
+              <>
+                <span className="text-sm text-gray-500 self-center">OR</span>
 
-              <div className="w-full px-4 flex items-center gap-x-2">
-                <Input
-                  value={feedback}
-                  onChange={handleFeedbackChange}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      handleUpdateDraftSchema();
+                <div className="w-full px-4 flex items-center gap-x-2">
+                  <Input
+                    value={feedback}
+                    onChange={handleFeedbackChange}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleUpdateDraftSchema();
+                      }
+                    }}
+                    placeholder="Suggest changes"
+                  />
+
+                  <Button
+                    disabled={
+                      isUpdatingDraftSchema || !feedback.trim() || isPending
                     }
-                  }}
-                  placeholder="Suggest changes"
-                />
-
-                <Button
-                  disabled={
-                    isUpdatingDraftSchema || !feedback.trim() || isPending
-                  }
-                  onClick={handleUpdateDraftSchema}
-                >
-                  <Image src={SendIcon} alt="send" />
-                </Button>
-              </div>
-            </>
-          )}
-        </div>
-      )}
+                    onClick={handleUpdateDraftSchema}
+                  >
+                    <Image src={SendIcon} alt="send" />
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
+        ))}
     </div>
   );
 };

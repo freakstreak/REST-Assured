@@ -65,6 +65,7 @@ const Form = ({ applicationId, name, description, status }: Props) => {
       case Step.ENDPOINTS:
         return (
           <Endpoints
+            applicationId={applicationId}
             isGenerated={
               status !== Step.ENDPOINTS &&
               status !== Step.SCHEMA &&
@@ -72,7 +73,6 @@ const Form = ({ applicationId, name, description, status }: Props) => {
               status !== Step.DETAILS &&
               status !== null
             }
-            isDisabled={isDisabled}
           />
         );
       case Step.OPERATION_SELECTION:

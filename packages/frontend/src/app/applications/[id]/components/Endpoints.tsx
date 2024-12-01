@@ -1,54 +1,22 @@
 import React from "react";
 
-import { Button } from "@/components/ui/button";
 import EndpointsTable from "@/app/applications/[id]/components/EndpointsTable";
 
-import { Endpoint } from "@/types/endpoint";
+import { getEndpoints } from "@/services/endpointService";
 
-export const endpoints: Endpoint[] = [
-  {
-    name: "users",
-    create: true,
-    read: true,
-    update: true,
-    delete: true,
-  },
-  {
-    name: "products",
-    create: true,
-    read: true,
-    update: true,
-    delete: false,
-  },
-  {
-    name: "orders",
-    create: true,
-    read: true,
-    update: false,
-    delete: false,
-  },
-  {
-    name: "categories",
-    create: true,
-    read: true,
-    update: false,
-    delete: false,
-  },
-];
+import { useQuery } from "@tanstack/react-query";
 
 type Props = {
-  isDisabled: boolean;
+  applicationId: string | undefined;
   isGenerated: boolean;
 };
 
-const Endpoints = ({ isDisabled, isGenerated }: Props) => {
-  // toast
-
-  // query
-
-  // mutation
-
-  // create handler
+const Endpoints = ({ applicationId, isGenerated }: Props) => {
+  const { data: operations, isLoading: isLoadingOperations } = useQuery({
+    queryKey: ["operations", applicationId?.toString()],
+    enabled: !!isGenerated,
+    queryFn: () => getEndpoints(applicationId as string),
+  });
 
   return (
     <div className="space-y-3">
@@ -58,10 +26,15 @@ const Endpoints = ({ isDisabled, isGenerated }: Props) => {
             Endpoints have not been selected yet.
           </p>
 
-          <Button disabled={isDisabled}>Generate Endpoints</Button>
+          {/* <Button disabled={isDisabled}>Generate Endpoints</Button> */}
         </>
       ) : (
-        <EndpointsTable endpoints={endpoints} viewOnly={true} />
+        <EndpointsTable
+          selectedEndpoints={operations || []}
+          loading={isLoadingOperations}
+          endpoints={operations || []}
+          viewOnly={true}
+        />
       )}
     </div>
   );
