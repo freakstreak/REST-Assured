@@ -11,7 +11,6 @@ import Schema from "@/app/applications/[id]/components/Schema";
 import Endpoints from "@/app/applications/[id]/components/Endpoints";
 import Deployment from "@/app/applications/[id]/components/Deployment";
 import Features from "@/app/applications/[id]/components/Features";
-import Operations from "@/app/applications/[id]/components/Operations";
 
 import { Step } from "@/types/step";
 
@@ -75,8 +74,15 @@ const Form = ({ applicationId, name, description, status }: Props) => {
             }
           />
         );
-      case Step.OPERATION_SELECTION:
-        return <Operations isDisabled={isDisabled} />;
+
+      case Step.PLAYGROUND:
+        return (
+          <div className="space-y-3">
+            <p className="text-sm text-gray-500">
+              Test your API endpoints with the playground.
+            </p>
+          </div>
+        );
 
       case Step.DEPLOYMENT:
         return <Deployment isDisabled={isDisabled} />;

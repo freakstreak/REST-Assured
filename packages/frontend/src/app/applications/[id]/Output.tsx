@@ -29,6 +29,7 @@ import {
   getEndpoints,
 } from "@/services/endpointService";
 import EndpointsTable from "@/app/applications/[id]/components/EndpointsTable";
+import Playground from "@/app/applications/[id]/components/Playground";
 
 import { Endpoint } from "@/types/endpoint";
 
@@ -275,6 +276,8 @@ const Output = ({ applicationId, status }: Props) => {
         <div className="mx-4">
           <RenderedEndpoints />
         </div>
+      ) : status === Step.PLAYGROUND ? (
+        <Playground />
       ) : (
         <div className="flex flex-col flex-1 gap-y-4 justify-center items-center px-8">
           <Image src={EmptyIcon} alt="empty" className="w-48 h-48" />

@@ -9,7 +9,7 @@ export const getEndpoints = async (id: string) => {
     applicationId: id,
   });
 
-  return response.data.data;
+  return response.data.data as Endpoint[];
 };
 
 export const createOperations = async (data: Endpoint[]) => {
