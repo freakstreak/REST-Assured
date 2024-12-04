@@ -3,6 +3,8 @@ import React, { useCallback } from "react";
 import Schema from "@/app/applications/[id]/components/Schema";
 import Features from "@/app/applications/[id]/components/Features";
 import Endpoints from "@/app/applications/[id]/components/Endpoints";
+import Deployment from "@/app/applications/[id]/components/Deployment";
+import Playground from "@/app/applications/[id]/components/Playground";
 
 import { Step } from "@/types/step";
 
@@ -69,6 +71,17 @@ const Output = ({ applicationId, status }: Props) => {
             isLoading={isPending}
           />
         );
+      case Step.DEPLOYMENT:
+        return (
+          <Deployment
+            applicationId={applicationId}
+            viewOnly={false}
+            handleNext={handleProceed}
+            isLoading={isPending}
+          />
+        );
+      case Step.PLAYGROUND:
+        return <Playground applicationId={applicationId} />;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, applicationId]);

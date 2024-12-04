@@ -1,32 +1,24 @@
 import React from "react";
 
 import { Button } from "@/components/ui/button";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import { useToast } from "@/hooks/use-toast";
-import { startDeployment, updateStatus } from "@/services/applicationService";
-import { Step } from "@/types/step";
+import { startDeployment } from "@/services/applicationService";
+
 type Props = {
-  isDisabled: boolean;
   applicationId: string | undefined;
-  isGenerated: boolean;
+  viewOnly: boolean;
+  isLoading?: boolean;
+  handleNext?: () => void;
 };
 
-const Deployment = ({ isDisabled, applicationId }: Props) => {
+const Deployment = ({ applicationId, viewOnly, handleNext }: Props) => {
   const { mutate: deployment, isPending } = useMutation({
     mutationFn: startDeployment,
   });
 
   const { toast } = useToast();
-
-  const [isDeploying, setIsDeploying] = React.useState(false);
-
-  const queryClient = useQueryClient();
-
-  const { mutateAsync: updateStatusMutation, isPending: isUpdatingStatus } =
-    useMutation({
-      mutationFn: updateStatus,
-    });
 
   const handleDeployment = async () => {
     if (!applicationId) return;
@@ -37,34 +29,30 @@ const Deployment = ({ isDisabled, applicationId }: Props) => {
           title: "Deployment started successfully",
         });
 
-        setIsDeploying(true);
-
-        updateStatusMutation(
-          { id: applicationId as string, status: Step.PLAYGROUND },
-          {
-            onSuccess: () => {
-              queryClient.invalidateQueries({
-                queryKey: ["application", applicationId?.toString()],
-              });
-            },
-          }
-        );
+        if (handleNext) {
+          handleNext();
+        }
       },
     });
   };
 
   return (
-    <div className="space-y-3">
-      <p className="text-sm text-gray-500">
-        Deployment has not been started yet.
+    <div className="space-y-3 h-full  flex flex-col items-center justify-center">
+      <p
+        data-view-only={viewOnly}
+        className="text-sm text-gray-500 data-[view-only=true]:mr-auto"
+      >
+        Deployment has not been started yet.{" "}
+        {!viewOnly && (
+          <span className="text-blue-500">Start deployment to continue.</span>
+        )}
       </p>
 
-      <Button
-        onClick={handleDeployment}
-        disabled={isDisabled || isPending || isDeploying || isUpdatingStatus}
-      >
-        Start Deployment
-      </Button>
+      {!viewOnly && (
+        <Button onClick={handleDeployment} disabled={viewOnly || isPending}>
+          {isPending ? "Deploying..." : "Start Deployment"}
+        </Button>
+      )}
     </div>
   );
 };

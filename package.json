@@ -6,7 +6,8 @@
     "backend": "npm run dev -w @hackathon/backend",
     "frontend": "npm run dev -w @hackathon/frontend",
     "hasura": "hasura console --project hasura",
-    "apply-migrations": "hasura migrate apply --project hasura"
+    "apply-migrations": "hasura migrate apply --project hasura",
+    "fe:build": "npm run build -w @hackathon/frontend"
   },
   "repository": {
     "type": "git",

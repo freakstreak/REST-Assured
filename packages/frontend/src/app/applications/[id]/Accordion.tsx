@@ -30,11 +30,6 @@ const AccordionContainer = ({
   const [openItems, setOpenItems] = useState([status]);
 
   const getAccordionContent = (step: Step) => {
-    const stepsArray = Object.values(Step);
-
-    const isDisabled =
-      status === null || stepsArray.indexOf(step) > stepsArray.indexOf(status);
-
     switch (step) {
       case Step.DETAILS:
         return <Details name={name} description={description} />;
@@ -60,6 +55,9 @@ const AccordionContainer = ({
       case Step.ENDPOINTS:
         return <Endpoints applicationId={applicationId} viewOnly={true} />;
 
+      case Step.DEPLOYMENT:
+        return <Deployment applicationId={applicationId} viewOnly={true} />;
+
       case Step.PLAYGROUND:
         return (
           <div className="space-y-3">
@@ -67,22 +65,6 @@ const AccordionContainer = ({
               Test your API endpoints with the playground.
             </p>
           </div>
-        );
-
-      case Step.DEPLOYMENT:
-        return (
-          <Deployment
-            isGenerated={
-              status !== Step.ENDPOINTS &&
-              status !== Step.SCHEMA &&
-              status !== Step.FEATURES_GENERATION &&
-              status !== Step.DETAILS &&
-              status !== Step.DEPLOYMENT &&
-              status !== null
-            }
-            isDisabled={isDisabled}
-            applicationId={applicationId}
-          />
         );
     }
   };

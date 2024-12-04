@@ -13,7 +13,7 @@ import { useMutation } from "@tanstack/react-query";
 import { login as loginService } from "@/services/auth";
 import { useAuth } from "@/contexts/AuthContext";
 
-export function LoginForm() {
+function LoginForm() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
 

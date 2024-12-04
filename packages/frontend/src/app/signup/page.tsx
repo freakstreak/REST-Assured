@@ -13,7 +13,7 @@ import { useMutation } from "@tanstack/react-query";
 import { signup } from "@/services/auth";
 import { useAuth } from "@/contexts/AuthContext";
 
-export function SignupForm() {
+function SignupForm() {
   const { login } = useAuth();
 
   const router = useRouter();
