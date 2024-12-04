@@ -3,7 +3,7 @@
 import React from "react";
 import { useParams } from "next/navigation";
 
-import Form from "@/app/applications/[id]/Form";
+import Form from "@/app/applications/[id]/Accordion";
 import Output from "@/app/applications/[id]/Output";
 
 import { useQuery } from "@tanstack/react-query";

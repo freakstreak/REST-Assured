@@ -21,7 +21,12 @@ type Props = {
   status: Step;
 };
 
-const Form = ({ applicationId, name, description, status }: Props) => {
+const AccordionContainer = ({
+  applicationId,
+  name,
+  description,
+  status,
+}: Props) => {
   const [openItems, setOpenItems] = useState([status]);
 
   const getAccordionContent = (step: Step) => {
@@ -38,12 +43,8 @@ const Form = ({ applicationId, name, description, status }: Props) => {
         return (
           <Features
             applicationId={applicationId}
-            isGenerated={
-              status !== Step.FEATURES_GENERATION &&
-              status !== Step.DETAILS &&
-              status !== null
-            }
-            isDisabled={isDisabled}
+            viewOnly={true}
+            isActive={status === Step.FEATURES_GENERATION}
           />
         );
 
@@ -51,29 +52,13 @@ const Form = ({ applicationId, name, description, status }: Props) => {
         return (
           <Schema
             applicationId={applicationId}
-            isGenerated={
-              status !== Step.FEATURES_GENERATION &&
-              status !== Step.SCHEMA &&
-              status !== Step.DETAILS &&
-              status !== null
-            }
-            isDisabled={isDisabled}
+            viewOnly={true}
+            isActive={status === Step.SCHEMA}
           />
         );
 
       case Step.ENDPOINTS:
-        return (
-          <Endpoints
-            applicationId={applicationId}
-            isGenerated={
-              status !== Step.ENDPOINTS &&
-              status !== Step.SCHEMA &&
-              status !== Step.FEATURES_GENERATION &&
-              status !== Step.DETAILS &&
-              status !== null
-            }
-          />
-        );
+        return <Endpoints applicationId={applicationId} viewOnly={true} />;
 
       case Step.PLAYGROUND:
         return (
@@ -126,4 +111,4 @@ const Form = ({ applicationId, name, description, status }: Props) => {
   );
 };
 
-export default Form;
+export default AccordionContainer;

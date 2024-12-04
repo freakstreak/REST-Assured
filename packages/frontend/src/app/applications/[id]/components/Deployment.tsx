@@ -53,8 +53,6 @@ const Deployment = ({ isDisabled, applicationId }: Props) => {
     });
   };
 
-  // read and show deployment.log file
-
   return (
     <div className="space-y-3">
       <p className="text-sm text-gray-500">

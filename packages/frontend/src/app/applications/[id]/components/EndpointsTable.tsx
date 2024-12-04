@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { Endpoint } from "@/types/endpoint";
 import { titleCase } from "@/lib/titleCase";
@@ -31,30 +31,50 @@ const EndpointsTable = ({
 }: Props) => {
   const handleCheck = (
     name: string,
-    action: "create" | "read" | "update" | "delete"
+    action: "create" | "read" | "update" | "delete",
+    schemaId: string
   ) => {
     if (!setSelectedEndpoints) return;
 
-    setSelectedEndpoints((prev) => {
-      return prev.map((e) =>
-        e.name === name
-          ? {
-              ...e,
-              [action]: !e[action],
-            }
-          : e
-      );
-    });
+    // if the name is not present in selected endpoints, add it
+    const isExisting = selectedEndpoints.find((e) => e.name === name);
+
+    if (isExisting) {
+      setSelectedEndpoints((prev) => {
+        return prev.map((e) =>
+          e.name === name
+            ? {
+                ...e,
+                [action]: !e[action],
+              }
+            : e
+        );
+      });
+    } else {
+      const newEndpoint: Endpoint = {
+        name,
+        [action]: true,
+        applicationSchemaId: schemaId,
+      };
+
+      setSelectedEndpoints((prev) => [...prev, newEndpoint]);
+    }
   };
 
+  useEffect(() => {
+    if (endpoints && viewOnly && setSelectedEndpoints) {
+      setSelectedEndpoints(endpoints);
+    }
+  }, [endpoints, viewOnly, setSelectedEndpoints]);
+
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 rounded-md">
       <h2 className="text-lg font-medium">Endpoints</h2>
 
       {loading ? (
         <Skeleton className="w-full h-72" />
       ) : (
-        <Table className="border-collapse border ">
+        <Table className="border-collapse border rounded-md">
           <TableHeader>
             <TableRow className="font-medium bg-gray-100">
               <TableHead align="center">Endpoint</TableHead>
@@ -74,77 +94,89 @@ const EndpointsTable = ({
           </TableHeader>
 
           <TableBody>
-            {endpoints?.map((endpoint, i) => (
-              <TableRow key={endpoint.name}>
-                <TableCell>
-                  {titleCase(endpoint.name || endpoint.routeName || "")}
-                </TableCell>
+            {endpoints?.map((endpoint) => {
+              const selected = selectedEndpoints.find((e) => {
+                const name = e.name || e.routeName;
 
-                <TableCell align="center" className="my-auto">
-                  <input
-                    type="checkbox"
-                    className="text-sm"
-                    checked={selectedEndpoints[i]?.create}
-                    onChange={() =>
-                      handleCheck(
-                        endpoint.name || endpoint.routeName || "",
-                        "create"
-                      )
-                    }
-                    name={`${endpoint.name}-create`}
-                    disabled={viewOnly}
-                  />
-                </TableCell>
+                return name === (endpoint.name || endpoint.routeName);
+              });
 
-                <TableCell align="center" className="my-auto">
-                  <input
-                    type="checkbox"
-                    className="text-sm"
-                    checked={selectedEndpoints[i]?.read}
-                    onChange={() =>
-                      handleCheck(
-                        endpoint.name || endpoint.routeName || "",
-                        "read"
-                      )
-                    }
-                    name={`${endpoint.name}-read`}
-                    disabled={viewOnly}
-                  />
-                </TableCell>
+              const name = endpoint.name || endpoint.routeName;
 
-                <TableCell align="center" className="my-auto">
-                  <input
-                    type="checkbox"
-                    className="text-sm"
-                    checked={selectedEndpoints[i]?.update}
-                    onChange={() =>
-                      handleCheck(
-                        endpoint.name || endpoint.routeName || "",
-                        "update"
-                      )
-                    }
-                    name={`${endpoint.name}-update`}
-                    disabled={viewOnly}
-                  />
-                </TableCell>
+              return (
+                <TableRow key={endpoint.name}>
+                  <TableCell>{titleCase(name || "")}</TableCell>
 
-                <TableCell align="center" className="my-auto">
-                  <input
-                    type="checkbox"
-                    className="text-sm"
-                    checked={selectedEndpoints[i]?.delete}
-                    onChange={() =>
-                      handleCheck(
-                        endpoint.name || endpoint.routeName || "",
-                        "delete"
-                      )
-                    }
-                    name={`${endpoint.name}-delete`}
-                    disabled={viewOnly}
-                  />
-                </TableCell>
-              </TableRow>
-            ))}
+                  <TableCell align="center" className="my-auto">
+                    <input
+                      type="checkbox"
+                      className="text-sm"
+                      checked={!!selected?.create}
+                      onChange={() =>
+                        handleCheck(
+                          name || "",
+                          "create",
+                          endpoint.applicationSchemaId || ""
+                        )
+                      }
+                      name={`${name}-create`}
+                      disabled={viewOnly}
+                    />
+                  </TableCell>
+
+                  <TableCell align="center" className="my-auto">
+                    <input
+                      type="checkbox"
+                      className="text-sm"
+                      checked={!!selected?.read}
+                      onChange={() =>
+                        handleCheck(
+                          name || "",
+                          "read",
+                          endpoint.applicationSchemaId || ""
+                        )
+                      }
+                      name={`${name}-read`}
+                      disabled={viewOnly}
+                    />
+                  </TableCell>
+
+                  <TableCell align="center" className="my-auto">
+                    <input
+                      type="checkbox"
+                      className="text-sm"
+                      checked={!!selected?.update}
+                      onChange={() =>
+                        handleCheck(
+                          name || "",
+                          "update",
+                          endpoint.applicationSchemaId || ""
+                        )
+                      }
+                      name={`${name}-update`}
+                      disabled={viewOnly}
+                    />
+                  </TableCell>
+
+                  <TableCell align="center" className="my-auto">
+                    <input
+                      type="checkbox"
+                      className="text-sm"
+                      checked={!!selected?.delete}
+                      onChange={() =>
+                        handleCheck(
+                          name || "",
+                          "delete",
+                          endpoint.applicationSchemaId || ""
+                        )
+                      }
+                      name={`${name}-delete`}
+                      disabled={viewOnly}
+                    />
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       )}

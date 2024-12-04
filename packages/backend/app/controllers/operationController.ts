@@ -208,7 +208,7 @@ class OperationController {
     const operations = applicationSchemaOperation?.data?.operations;
 
     if (!operations || !operations.length) {
-      return Common.Response(res, true, "No operations found");
+      return Common.Response(res, true, "No operations found", []);
     }
 
     const endpoints: any[] = [];
