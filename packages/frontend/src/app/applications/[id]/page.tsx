@@ -5,13 +5,13 @@ import { useParams } from "next/navigation";
 
 import Form from "@/app/applications/[id]/Accordion";
 import Output from "@/app/applications/[id]/Output";
+import Navbar from "@/components/Navbar";
 
 import { useQuery } from "@tanstack/react-query";
 import { getApplicationById } from "@/services/applicationService";
 
-import { ApplicationProvider } from "@/contexts/ApplicationContext";
-
 import { Step } from "@/types/step";
+import Dropdown from "@/app/applications/[id]/components/Dropdown";
 
 const Application = () => {
   const { id } = useParams();
@@ -28,22 +28,24 @@ const Application = () => {
       : Step.FEATURES_GENERATION;
 
   return (
-    <ApplicationProvider>
-      <div className="flex flex-col min-h-screen">
-        <div className="grid grid-cols-2 flex-1">
-          {/* left */}
-          <Form
-            applicationId={application?.id}
-            name={application?.name}
-            description={application?.description}
-            status={status}
-          />
+    <div className="flex flex-col min-h-screen overflow-hidden">
+      <Navbar>
+        <Dropdown name={application?.name} id={application?.id} />
+      </Navbar>
 
-          {/* right */}
-          <Output applicationId={application?.id} status={status} />
-        </div>
+      <div className="grid grid-cols-2 flex-1">
+        {/* left */}
+        <Form
+          applicationId={application?.id}
+          name={application?.name}
+          description={application?.description}
+          status={status}
+        />
+
+        {/* right */}
+        <Output applicationId={application?.id} status={status} />
       </div>
-    </ApplicationProvider>
+    </div>
   );
 };
 

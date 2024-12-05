@@ -8,7 +8,7 @@ type Props = {
 
 const Navbar = ({ children }: Props) => {
   return (
-    <div className="flex items-center justify-between gap-x-4 sticky top-0 bg-white shadow-sm p-4 z-10">
+    <div className="flex items-center justify-between gap-x-4 sticky top-0 bg-white shadow-sm p-4 z-10 h-[10vh]">
       {children}
 
       <Profile />

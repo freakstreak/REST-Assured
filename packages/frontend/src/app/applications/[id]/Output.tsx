@@ -87,7 +87,7 @@ const Output = ({ applicationId, status }: Props) => {
   }, [status, applicationId]);
 
   return (
-    <div className="relative flex flex-col gap-y-3 pt-5 border-l border-gray-200 max-h-screen overflow-auto">
+    <div className="relative flex flex-col gap-y-3 pt-5 border-l border-gray-200 max-h-[90vh] overflow-auto">
       <RenderedContent />
     </div>
   );
