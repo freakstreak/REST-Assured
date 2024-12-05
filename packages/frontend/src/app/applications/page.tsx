@@ -1,11 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 
-import { Input } from "@/components/ui/input";
-import Application from "@/app/applications/Application";
-import CreateAppModal from "@/app/applications/CreateAppModal";
-
+import Application from "@/app/applications/components/Application";
+import CreateAppModal from "@/app/applications/components/CreateAppModal";
+import Search from "@/app/applications/components/Search";
 import Navbar from "@/components/Navbar";
 
 import Image from "next/image";
@@ -17,15 +16,24 @@ import { useQuery } from "@tanstack/react-query";
 import { getUserApplications } from "@/services/applicationService";
 
 import { useAuth } from "@/contexts/AuthContext";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const Applications = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
   const { user } = useAuth();
 
-  const { data: applications } = useQuery({
-    queryKey: ["applications"],
+  const { data: applications, isLoading } = useQuery({
+    queryKey: ["applications", debouncedSearchTerm],
     enabled: !!user,
-    queryFn: () => getUserApplications(user?.id || ""),
+    queryFn: () => getUserApplications(user?.id || "", debouncedSearchTerm),
   });
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
 
   return (
     <div className="flex flex-col gap-y-4 min-h-screen">
@@ -41,14 +49,14 @@ const Applications = () => {
             <h1 className="text-xl font-semibold">Applications</h1>
           </div>
 
-          <Input placeholder="Search" className="w-auto" />
+          <Search searchTerm={searchTerm} handleSearch={handleSearch} />
         </div>
 
         <CreateAppModal />
       </Navbar>
 
       {/* cards for applications */}
-      {applications?.length ? (
+      {applications?.length || isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 px-4">
           {applications?.map((application) => (
             <Application

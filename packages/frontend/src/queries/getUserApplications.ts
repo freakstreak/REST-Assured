@@ -1,8 +1,10 @@
 import { gql } from "graphql-request";
 
 export const GET_USER_APPLICATIONS = gql`
-  query getUserApplications($userId: uuid!) {
-    applications(where: { user_id: { _eq: $userId } }) {
+  query getUserApplications($userId: uuid!, $query: String = "") {
+    applications(
+      where: { user_id: { _eq: $userId }, name: { _ilike: $query } }
+    ) {
       id
       name
       status

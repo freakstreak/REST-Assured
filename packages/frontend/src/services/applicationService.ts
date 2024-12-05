@@ -15,9 +15,10 @@ import { ApplicationDeployment } from "@/types/applicationDeployment";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export const getUserApplications = async (userId: string) => {
+export const getUserApplications = async (userId: string, query: string) => {
   const result = (await client.request(GET_USER_APPLICATIONS, {
     userId,
+    query: `%${query}%`,
   })) as { applications: Application[] };
 
   return result.applications;
