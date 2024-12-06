@@ -12,7 +12,9 @@ export const getDraftSchemas = async (applicationId: string) => {
     applicationId,
   })) as { application_draft_schemas: DraftSchema[] };
 
-  return result.application_draft_schemas?.[0];
+  const data = result.application_draft_schemas?.[0];
+
+  return data || null;
 };
 
 export const generateFeatures = async (applicationId: string) => {

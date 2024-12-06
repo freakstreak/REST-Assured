@@ -110,7 +110,7 @@ const Schema = ({
           <SchemaView loading={isPending} schemas={schemas} />
 
           {!viewOnly && (
-            <div className="flex flex-col gap-y-2 items-center justify-between bg-white w-full sticky bottom-0 mt-auto z-10 py-4 border-t border-gray-200">
+            <div className="flex flex-col gap-y-2 items-center justify-between bg-background w-full sticky bottom-0 mt-auto z-10 py-4 border-t border-gray-200">
               <Button
                 onClick={handleProceed}
                 disabled={isPending || isGeneratingSchema || isLoading}

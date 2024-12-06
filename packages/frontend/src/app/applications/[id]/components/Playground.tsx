@@ -96,7 +96,7 @@ const Playground = ({ applicationId }: Props) => {
   };
 
   return (
-    <div className="p-6 space-y-6 bg-white shadow rounded">
+    <div className="p-6 space-y-6 bg-background shadow rounded">
       <div className="space-y-4">
         <h3 className="text-lg font-semibold">Select an Endpoint</h3>
 
@@ -109,7 +109,7 @@ const Playground = ({ applicationId }: Props) => {
           <SelectContent>
             {endpointOptions.map((option) => (
               <SelectItem
-                key={option.route}
+                key={`${option.route}-${option.method}`}
                 value={`${option.route} ${option.method}`}
               >
                 {option.label}

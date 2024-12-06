@@ -23,7 +23,7 @@ const Profile = () => {
   return (
     <div className="flex items-center gap-x-2">
       <Avatar>
-        <AvatarFallback className="bg-orange-400 text-white">
+        <AvatarFallback className="bg-orange-400 text-white h-auto">
           {user?.name.charAt(0)}
         </AvatarFallback>
       </Avatar>

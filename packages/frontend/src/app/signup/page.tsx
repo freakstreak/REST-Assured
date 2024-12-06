@@ -52,7 +52,7 @@ function SignupForm() {
     <main className="flex justify-center items-center h-screen">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md p-5 border rounded-md shadow-md bg-white"
+        className="w-full max-w-md p-5 border rounded-md shadow-md bg-background"
       >
         <h1 className="text-2xl font-bold mb-4 text-center">Sign Up</h1>
 

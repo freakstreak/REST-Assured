@@ -49,7 +49,12 @@ const Deployment = ({ applicationId, viewOnly, handleNext }: Props) => {
       </p>
 
       {!viewOnly && (
-        <Button onClick={handleDeployment} disabled={viewOnly || isPending}>
+        <Button
+          onClick={handleDeployment}
+          disabled={viewOnly || isPending}
+          data-loading={isPending}
+          className="data-[loading='true']:animate-pulse"
+        >
           {isPending ? "Deploying..." : "Start Deployment"}
         </Button>
       )}

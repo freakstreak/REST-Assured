@@ -6,6 +6,7 @@ import Application from "@/app/applications/components/Application";
 import CreateAppModal from "@/app/applications/components/CreateAppModal";
 import Search from "@/app/applications/components/Search";
 import Navbar from "@/components/Navbar";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import Image from "next/image";
 import ApplicationsIcon from "@/public/icons/applications.svg";
@@ -25,7 +26,7 @@ const Applications = () => {
 
   const { user } = useAuth();
 
-  const { data: applications, isLoading } = useQuery({
+  const { data: applications, isPending } = useQuery({
     queryKey: ["applications", debouncedSearchTerm],
     enabled: !!user,
     queryFn: () => getUserApplications(user?.id || "", debouncedSearchTerm),
@@ -56,7 +57,15 @@ const Applications = () => {
       </Navbar>
 
       {/* cards for applications */}
-      {applications?.length || isLoading ? (
+
+      {isPending ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 px-4">
+          <Skeleton className="w-full h-32" />
+          <Skeleton className="w-full h-32" />
+          <Skeleton className="w-full h-32" />
+          <Skeleton className="w-full h-32" />
+        </div>
+      ) : applications?.length ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 px-4">
           {applications?.map((application) => (
             <Application

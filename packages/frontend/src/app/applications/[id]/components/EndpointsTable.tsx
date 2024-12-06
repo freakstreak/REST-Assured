@@ -104,7 +104,7 @@ const EndpointsTable = ({
               const name = endpoint.name || endpoint.routeName;
 
               return (
-                <TableRow key={endpoint.name}>
+                <TableRow key={`${name}-${endpoint.applicationSchemaId}`}>
                   <TableCell>{titleCase(name || "")}</TableCell>
 
                   <TableCell align="center" className="my-auto">

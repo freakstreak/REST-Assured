@@ -31,7 +31,7 @@ const Dropdown = ({ name, id }: Props) => {
   const { data: applications } = useQuery({
     queryKey: ["applications"],
     enabled: !!userId,
-    queryFn: () => getUserApplications(userId || ""),
+    queryFn: () => getUserApplications(userId || "", ""),
   });
 
   return (
