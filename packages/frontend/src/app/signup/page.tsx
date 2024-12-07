@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import AuthLayout from "@/components/AuthLayout";
 
 import { useMutation } from "@tanstack/react-query";
 
@@ -49,7 +50,7 @@ function SignupForm() {
   };
 
   return (
-    <main className="flex justify-center items-center h-screen">
+    <AuthLayout>
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-md p-5 border rounded-md shadow-md bg-background"
@@ -115,7 +116,7 @@ function SignupForm() {
           </Button>
         </div>
       </form>
-    </main>
+    </AuthLayout>
   );
 }
 

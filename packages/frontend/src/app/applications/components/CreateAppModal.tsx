@@ -60,7 +60,10 @@ const CreateAppModal = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>+ New Application</Button>
+        <Button className="px-3 sm:px-auto" title="New Application">
+          <span className="sm:hidden">+</span>
+          <span className="hidden sm:inline">+ New Application</span>
+        </Button>
       </DialogTrigger>
 
       <DialogContent>

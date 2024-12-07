@@ -11,7 +11,7 @@ const Search = ({ searchTerm, handleSearch }: Props) => {
   return (
     <Input
       placeholder="Search"
-      className="w-auto"
+      className="w-auto hidden md:block"
       value={searchTerm}
       onChange={handleSearch}
     />

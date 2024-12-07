@@ -76,7 +76,7 @@ const AccordionContainer = ({
   return (
     <Accordion
       type="multiple"
-      className="w-full px-4 max-h-[90vh] overflow-auto"
+      className="w-full px-4 max-h-[45vh] md:max-h-[90vh] overflow-auto"
       value={openItems}
       onValueChange={(value) => setOpenItems(value as unknown as Step[])}
     >

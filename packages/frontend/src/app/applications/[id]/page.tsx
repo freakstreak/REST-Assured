@@ -33,7 +33,7 @@ const Application = () => {
         <Dropdown name={application?.name} id={application?.id} />
       </Navbar>
 
-      <div className="grid grid-cols-2 flex-1">
+      <div className="grid grid-cols-1 md:grid-cols-2 flex-1">
         {/* left */}
         <Form
           applicationId={application?.id}
