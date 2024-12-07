@@ -1,5 +1,6 @@
 import { GraphQLClient } from "graphql-request";
-import { getCookie } from "cookies-next";
+import { getCookie, deleteCookie } from "cookies-next";
+import * as jose from "jose";
 
 const HASURA_GRAPHQL_URL = process.env.NEXT_PUBLIC_HASURA_GRAPHQL_URL || "";
 
@@ -13,6 +14,23 @@ const getToken = (req?: Request, res?: Response) => {
 
 async function middleware(request: RequestInit) {
   const token = getToken();
+
+  try {
+    const secret = new TextEncoder().encode(
+      process.env.NEXT_PUBLIC_JWT_SECRET_KEY
+    );
+
+    await jose.jwtVerify(token, secret);
+  } catch (error) {
+    console.error(error);
+
+    localStorage.removeItem("user");
+    deleteCookie("user");
+
+    if (typeof window !== "undefined") {
+      window.location.href = "/login";
+    }
+  }
 
   return {
     ...request,
