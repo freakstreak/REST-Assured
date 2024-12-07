@@ -5,14 +5,8 @@ import { format } from "date-fns";
 
 import Image from "next/image";
 import ArrowRight from "@/public/icons/arrow-right.svg";
-import DeleteIcon from "@/public/icons/delete.svg";
 
-import { deleteApplication } from "@/services/applicationService";
-
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "@/hooks/use-toast";
-
-import { Button } from "@/components/ui/button";
+import DeleteAppModal from "@/app/applications/components/DeleteAppModal";
 
 type Props = {
   id: string;
@@ -22,28 +16,6 @@ type Props = {
 };
 
 const Application = ({ id, name, description, createdAt }: Props) => {
-  const queryClient = useQueryClient();
-
-  const { mutate: deleteApp } = useMutation({
-    mutationFn: deleteApplication,
-  });
-
-  const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    e.preventDefault();
-
-    deleteApp(id, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["applications"] });
-
-        toast({
-          title: "Application deleted successfully",
-          
-        });
-      },
-    });
-  };
-
   return (
     <Link
       href={`/applications/${id}`}
@@ -70,9 +42,7 @@ const Application = ({ id, name, description, createdAt }: Props) => {
           {format(new Date(createdAt), "MMM d, yyyy")}
         </p>
 
-        <Button variant="ghost" className="px-1.5 py-1" onClick={handleDelete}>
-          <Image src={DeleteIcon} alt="delete" className="w-4 h-4" />
-        </Button>
+        <DeleteAppModal id={id} name={name} />
       </div>
     </Link>
   );
