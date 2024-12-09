@@ -28,7 +28,7 @@ const Application = () => {
       : Step.FEATURES_GENERATION;
 
   return (
-    <div className="flex flex-col min-h-screen overflow-hidden">
+    <div className="flex flex-col min-h-screen overflow-hidden bg-background">
       <Navbar>
         <Dropdown name={application?.name} id={application?.id} />
       </Navbar>

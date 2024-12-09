@@ -65,6 +65,10 @@
   }
 }
 
+body {
+  background: url("../public/bg.svg"), #fff !important;
+}
+
 .required:after {
   content: " *";
   color: red;

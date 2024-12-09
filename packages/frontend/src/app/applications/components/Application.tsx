@@ -19,7 +19,7 @@ const Application = ({ id, name, description, createdAt }: Props) => {
   return (
     <Link
       href={`/applications/${id}`}
-      className="flex flex-col justify-between gap-y-3 p-4 border rounded-lg cursor-pointer hover:shadow-md hover:bg-slate-50 transition-all duration-300 group"
+      className="flex flex-col justify-between bg-background gap-y-3 p-4 border rounded-lg cursor-pointer hover:shadow-md hover:bg-slate-50 transition-all duration-300 group"
     >
       <div className="flex items-center justify-between">
         <h1 className="text-sm font-semibold">{name}</h1>
