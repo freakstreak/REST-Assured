@@ -30,6 +30,7 @@ Rest-Assured is built using the following technologies:
 - **RadixUI**: Accessible, low-level UI components for building modern user interfaces.
 - **OpenAI**: Integration with AI models to automatically generate code and assist in app development.
 - **LLM**: Large Language Models for intelligent, AI-assisted decision making and generation of API endpoints.
+- **Docker**: Containerization technology to simplify deployment and ensure consistency across environments.
 
 ---
 
