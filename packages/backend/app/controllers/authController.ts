@@ -9,7 +9,7 @@ import { validationResult } from "express-validator";
 class AuthController {
   public static async signup(req: Request, res: any): Promise<any> {
     try {
-      const { name, email, password } = req.body;
+      const { name, email, password } = req.body.input || req.body;
 
       const errors = validationResult(req);
 
@@ -52,6 +52,11 @@ class AuthController {
         id: user.id,
         name: user.name,
         email: user.email,
+        "https://hasura.io/jwt/claims": {
+          "x-hasura-default-role": "user",
+          "x-hasura-allowed-roles": ["user"],
+          "x-hasura-user-id": user.id,
+        }
       });
 
       return Common.Response(res, true, "Sign up successfully!", {
@@ -65,7 +70,7 @@ class AuthController {
   }
 
   public static async login(req: Request, res: any): Promise<any> {
-    const { email, password } = req.body;
+    const { email, password } = req.body.input || req.body;
 
     try {
       const { data } = await Common.GQLRequest({
@@ -87,7 +92,7 @@ class AuthController {
       const user = data.data.users[0];
 
       // check password with the hashed password
-      const validPassword = await bcrypt.compare(user.password, password);
+      const validPassword = await bcrypt.compare(password, user.password);
       if (!validPassword) {
         return Common.Response(res, false, "Invalid Password", null);
       }
@@ -100,6 +105,11 @@ class AuthController {
         id: user.id,
         name: user.name,
         email: user.email,
+        "https://hasura.io/jwt/claims": {
+          "x-hasura-default-role": "user",
+          "x-hasura-allowed-roles": ["user"],
+          "x-hasura-user-id": user.id,
+        }
       });
 
       return Common.Response(res, true, "Sign in successfully!", {
@@ -111,16 +121,22 @@ class AuthController {
     }
   }
 
-  public static async me(req: Request, res: any): Promise<any> {
-    const token = req.headers["x-hasura-user-token"];
+  public static async me(req: any, res: any): Promise<any> {    
+    const token = req.headers["authorization"] as string;
+
+    if (!token) {
+      return Common.Response(res, false, "Access denied", null);
+    }
 
     try {
       // graphql query
       const { data } = await Common.AuthGQLRequest({
-        variables: {},
+        variables: { email: req.user.email },
         query: UserQueries.UserByEmail,
-        token: token,
+        token: token.split(" ")[1],
       });
+
+      console.log(data);
 
       if (data && data.data && data.data.users && data.data.users[0]) {
         return res.json(data.data.users[0]);

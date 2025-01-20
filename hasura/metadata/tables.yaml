@@ -1,10 +1,362 @@
 - table:
+    name: application_draft_schemas
+    schema: public
+  object_relationships:
+    - name: application
+      using:
+        foreign_key_constraint_on: application_id
+  insert_permissions:
+    - role: user
+      permission:
+        check:
+          application:
+            user:
+              id:
+                _eq: X-Hasura-User-Id
+        columns:
+          - application_id
+          - id
+          - json
+          - status
+      comment: ""
+  select_permissions:
+    - role: user
+      permission:
+        columns:
+          - application_id
+          - id
+          - json
+          - status
+        filter:
+          application:
+            user:
+              id:
+                _eq: X-Hasura-User-Id
+        allow_aggregations: true
+      comment: ""
+  update_permissions:
+    - role: user
+      permission:
+        columns:
+          - json
+          - status
+        filter:
+          application:
+            user:
+              id:
+                _eq: X-Hasura-User-Id
+        check: null
+      comment: ""
+  delete_permissions:
+    - role: user
+      permission:
+        filter:
+          application:
+            user:
+              id:
+                _eq: X-Hasura-User-Id
+      comment: ""
+- table:
+    name: application_schemas
+    schema: public
+  object_relationships:
+    - name: application
+      using:
+        foreign_key_constraint_on: application_id
+  array_relationships:
+    - name: operations
+      using:
+        foreign_key_constraint_on:
+          column: application_schema_id
+          table:
+            name: operations
+            schema: public
+  insert_permissions:
+    - role: user
+      permission:
+        check:
+          application:
+            user:
+              id:
+                _eq: X-Hasura-User-Id
+        columns:
+          - ddl_path
+          - model_path
+          - name
+          - application_id
+          - id
+          - json
+          - status
+          - created_at
+          - updated_at
+      comment: ""
+  select_permissions:
+    - role: user
+      permission:
+        columns:
+          - ddl_path
+          - model_path
+          - name
+          - application_id
+          - id
+          - json
+          - status
+          - created_at
+          - updated_at
+        filter:
+          application:
+            user:
+              id:
+                _eq: X-Hasura-User-Id
+        allow_aggregations: true
+      comment: ""
+  update_permissions:
+    - role: user
+      permission:
+        columns:
+          - ddl_path
+          - model_path
+          - name
+          - application_id
+          - id
+          - json
+          - status
+          - created_at
+          - updated_at
+        filter:
+          application:
+            user:
+              id:
+                _eq: X-Hasura-User-Id
+        check: null
+      comment: ""
+  delete_permissions:
+    - role: user
+      permission:
+        filter:
+          application:
+            user:
+              id:
+                _eq: X-Hasura-User-Id
+      comment: ""
+- table:
+    name: applications
+    schema: public
+  object_relationships:
+    - name: application_draft_schema
+      using:
+        manual_configuration:
+          column_mapping:
+            id: application_id
+          insertion_order: null
+          remote_table:
+            name: application_draft_schemas
+            schema: public
+    - name: user
+      using:
+        foreign_key_constraint_on: user_id
+  array_relationships:
+    - name: application_draft_schemas
+      using:
+        foreign_key_constraint_on:
+          column: application_id
+          table:
+            name: application_draft_schemas
+            schema: public
+    - name: application_schemas
+      using:
+        foreign_key_constraint_on:
+          column: application_id
+          table:
+            name: application_schemas
+            schema: public
+    - name: deployments
+      using:
+        foreign_key_constraint_on:
+          column: application_id
+          table:
+            name: deployments
+            schema: public
+  insert_permissions:
+    - role: user
+      permission:
+        check:
+          user_id:
+            _eq: X-Hasura-User-Id
+        columns:
+          - name
+          - id
+          - description
+          - created_at
+          - updated_at
+          - status
+          - user_id
+      comment: ""
+  select_permissions:
+    - role: user
+      permission:
+        columns:
+          - created_at
+          - description
+          - file_path
+          - id
+          - name
+          - status
+          - updated_at
+          - user_id
+        filter:
+          user_id:
+            _eq: X-Hasura-User-Id
+        allow_aggregations: true
+      comment: ""
+  update_permissions:
+    - role: user
+      permission:
+        columns:
+          - description
+          - name
+          - status
+        filter:
+          user_id:
+            _eq: X-Hasura-User-Id
+        check: null
+      comment: ""
+  delete_permissions:
+    - role: user
+      permission:
+        filter:
+          user_id:
+            _eq: X-Hasura-User-Id
+      comment: ""
+- table:
+    name: deployments
+    schema: public
+  insert_permissions:
+    - role: user
+      permission:
+        check: {}
+        columns:
+          - application_id
+          - id
+          - log_json
+          - status
+          - created_at
+          - updated_at
+      comment: ""
+  select_permissions:
+    - role: user
+      permission:
+        columns:
+          - application_id
+          - id
+          - log_json
+          - status
+          - created_at
+          - updated_at
+        filter: {}
+      comment: ""
+  update_permissions:
+    - role: user
+      permission:
+        columns:
+          - application_id
+          - id
+          - log_json
+          - status
+          - created_at
+          - updated_at
+        filter: {}
+        check: null
+      comment: ""
+  delete_permissions:
+    - role: user
+      permission:
+        filter: {}
+      comment: ""
+- table:
+    name: operations
+    schema: public
+  object_relationships:
+    - name: application_schema
+      using:
+        foreign_key_constraint_on: application_schema_id
+  insert_permissions:
+    - role: user
+      permission:
+        check:
+          application_schema:
+            application:
+              user:
+                id:
+                  _eq: X-Hasura-User-Id
+        columns:
+          - is_async
+          - is_authenticated
+          - is_media
+          - name
+          - application_schema_id
+          - id
+          - created_at
+          - updated_at
+      comment: ""
+  select_permissions:
+    - role: user
+      permission:
+        columns:
+          - is_async
+          - is_authenticated
+          - is_media
+          - name
+          - application_schema_id
+          - id
+          - created_at
+          - updated_at
+        filter:
+          application_schema:
+            application:
+              user:
+                id:
+                  _eq: X-Hasura-User-Id
+        allow_aggregations: true
+      comment: ""
+  update_permissions:
+    - role: user
+      permission:
+        columns:
+          - is_async
+          - is_authenticated
+          - is_media
+          - name
+          - application_schema_id
+          - id
+          - created_at
+          - updated_at
+        filter:
+          application_schema:
+            application:
+              user:
+                id:
+                  _eq: X-Hasura-User-Id
+        check: null
+      comment: ""
+  delete_permissions:
+    - role: user
+      permission:
+        filter:
+          application_schema:
+            application:
+              user:
+                id:
+                  _eq: X-Hasura-User-Id
+      comment: ""
+- table:
     name: users
     schema: public
-  configuration:
-    column_config:
-      id:
-        custom_name: id
-    custom_column_names:
-      id: id
-    custom_root_fields: {}
+  array_relationships:
+    - name: applications
+      using:
+        foreign_key_constraint_on:
+          column: user_id
+          table:
+            name: applications
+            schema: public
