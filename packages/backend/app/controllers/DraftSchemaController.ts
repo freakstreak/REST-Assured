@@ -115,6 +115,8 @@ class DraftSchemaController {
         query: ApplicationQueries.getApplicationById,
       });
 
+      console.log(applicationData);
+
       const application = applicationData?.data?.applications_by_pk;
 
       if (!application) {

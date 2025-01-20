@@ -105,10 +105,8 @@ class SchemaController {
         return Common.Response(res, false, "Application not found");
       }
 
-      if (
-        !application?.application_draft_schema ||
-        !application?.application_draft_schema.json
-      ) {
+      console.log(application);
+      if (!application?.application_draft_schemas?.[0]?.json) {
         return Common.Response(
           res,
           false,
@@ -116,7 +114,7 @@ class SchemaController {
         );
       }
 
-      const draftSchema = application?.application_draft_schema.json;
+      const draftSchema = application?.application_draft_schemas[0].json;
 
       const prompt = `Based on the following schemas, generate a JSON object that includes key-value pairs for attributes for each schema. The description of the application is: "${
         application.description
@@ -142,6 +140,7 @@ class SchemaController {
         ]
       }
 
+      Make sure to add id attribute to each schema.
       Don't add -schema suffix to the schemaName.
       Ensure the response is valid JSON, concise, and relevant to the provided description.
       Include at least 3 schemas in the JSON.

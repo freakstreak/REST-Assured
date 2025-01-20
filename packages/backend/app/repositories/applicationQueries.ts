@@ -19,7 +19,7 @@ class ApplicationQueries {
       status
       description
       file_path
-      application_draft_schema {
+      application_draft_schemas {
         id
         json
       }
