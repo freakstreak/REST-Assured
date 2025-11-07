@@ -119,6 +119,7 @@ class DraftSchemaController {
 
       const application = applicationData?.data?.applications_by_pk;
 
+      console.log(applicationData);
       if (!application) {
         return Common.Response(res, false, "!Application not found");
       }

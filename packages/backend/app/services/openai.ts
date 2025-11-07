@@ -14,7 +14,7 @@ class OpenAIService {
 
   public async prompt(data: Array<ChatCompletionMessageParam>) {
     return await this.openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-5-nano",
       messages: data,
     });
   }
